@@ -1,0 +1,102 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background: linear-gradient(#141e30, #243b55);
+    background: url("../img/back-a.jpg") center center / cover no-repeat rgb(34, 34, 34);
+}
+
+.login-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    padding: 40px;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, .5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, .6);
+    border-radius: 10px;
+}
+
+.login-box h2 {
+    margin: 0 0 30px;
+    padding: 0;
+    color: #fff;
+    text-align: center;
+}
+
+.login-box .user-box {
+    position: relative;
+}
+
+.login-box .user-box input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+}
+
+.login-box .user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    pointer-events: none;
+}
+
+.sbt {
+    width: 70px;
+    margin-right: 30px;
+    height: 30px;
+    border: 0px solid #000;
+    background: black;
+    color: #fff;
+    cursor: pointer;
+}
+
+.register {
+    width: 70px;
+    height: 30px;
+    margin-right: 30px;
+    border: 0px solid #000;
+    background: black;
+    color: #fff;
+    cursor: pointer;
+}
+
+.rst {
+    width: 70px;
+    height: 30px;
+    border: 0px solid #000;
+    background: black;
+    color: #fff;
+    cursor: pointer;
+}
+
+.ft {
+    color: #03e9f4;
+}
+.yzm-box{
+    margin-bottom: 30px;
+    color:#fff;
+    flex-wrap: wrap;
+    display: flex;
+}
+.yzm{
+    display: inline-block;
+}
+.yzm a {
+    color: #fff3cd;
+}
+.yanzhenma {
+    width: 80px;
+    height:34px;
+}

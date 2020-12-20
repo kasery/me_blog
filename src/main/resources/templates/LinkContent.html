@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title id="html_title">友情链接</title>
+    <link th:href="@{css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{css/ll-css.css}" rel="stylesheet">
+    <link th:href="@{css/font-awesome.min.css}" rel="stylesheet">
+    <link th:href="@{css/railscasts.css}" rel="stylesheet">
+    <link th:href="@{css/WzStyle.css}" rel="stylesheet"/>
+    <link th:href="@{css/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css2/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css3/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css4/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css5/iconfont.css}" rel="stylesheet"/>
+    <link th:href="@{/editor/css/editormd.preview.css}" rel="stylesheet"/>
+    <style>
+        ul{
+            padding-left:5%;
+        }
+        ul li {
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="index :: nav"></div>
+<div id="tb">
+    <div class="ll-header container-fluid" id="im">
+        <div class="ll-logo">
+            <a href="/index">
+                <h1 id="link_id">友情链接</h1>
+                <p>人们说“有朝一日”的时候，其实意思就是“永不”。</p>
+            </a>
+        </div>
+    </div>
+    <div class="container ll-cantainer" style="background-color: rgba(255, 255, 255, 0.9);">
+        <div class="ll-artical-content">
+            <div class="ll-artical bk-wz" id="doc-content">
+                <div>
+                    <h1 style="color: black">友链</h1>
+                    <ul id="blogroll">
+
+                    </ul>
+                </div>
+                <div>
+                    <h1 style="color: black">推荐网站</h1>
+                    <ul id="Websites">
+
+                    </ul>
+                </div>
+                <div>
+                    <h1 style="color: black">个人链接</h1>
+                    <ul id="melink">
+
+                    </ul>
+                </div>
+                <div>
+                    <h1 style="color: black">链接须知</h1>
+                    <p>欢迎互换友链^_^不过请确定贵站可以正常运行.</p>
+                    <p>我的邮箱是 2449207463@qq.com,格式要求如下:</p>
+                    <ul>
+                        <li>网站名称：13blog</li>
+                        <li>网站链接：http://13blog.site</li>
+                        <li>网站描述：十三的个人博客</li>
+                    </ul>
+                    <p>请保证自己的链接长期有效,不然可能会被清理</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 博客底部 -->
+    <div class="container-fluid ll-footer">
+        <div class="container">
+            <p class="ll-footer-link">
+                <span id="footerAbout">&copy; </span>
+                <span> Powered by </span>
+                <span id="footerCopyRight"></span>
+            </p>
+            <p class="ll-footer-link">
+                <span id="footerICP"></span>
+                <span>❤Theme Amaze by spiritree & jiahao.Zhang</span>
+            </p>
+        </div>
+    </div>
+</div>
+<!-- 进度条 -->
+<div class="progressbar">
+    <div class="progressbar-b"></div>
+</div>
+<script th:src="@{js/ribbon.js}"></script>
+<script th:src="@{js/jquery.min.js}"></script>
+<script th:src="@{js/bootstrap.min.js}"></script>
+<script th:src="@{js/TweenMax.min.js}"></script>
+<script th:src="@{js/jquery.js}"></script>
+<script th:src="@{layui/layui.js}"></script>
+<script th:src="@{js/jsrender.min.js}"></script>
+<script th:src="@{js/highlight.pack.js}"></script>
+<script th:src="@{editor/examples/js/jquery.min.js}"></script>
+<script th:src="@{editor/lib/marked.min.js}"></script>
+<script th:src="@{editor/lib/prettify.min.js}"></script>
+<script th:src="@{editor/lib/raphael.min.js}"></script>
+<script th:src="@{editor/lib/underscore.min.js}"></script>
+<script th:src="@{editor/lib/sequence-diagram.min.js}"></script>
+<script th:src="@{editor/lib/flowchart.min.js}"></script>
+<script th:src="@{editor/lib/jquery.flowchart.min.js}"></script>
+<script th:src="@{editor/editormd.js}"></script>
+<script>
+    //查询出网站名称,配置
+    $.ajax({
+        url: "blog/config",
+        success: function (req) {
+            console.log("配置" + req.data);
+            for (var i = 0; i < req.data.length; i++) {
+                $("#" + req.data[i].config_name).append(req.data[i].config_value);
+            }
+        },
+    });
+    //根据id查询出要编辑的数据
+    $.ajax({
+        url: "blog/linkFindAll",
+        success: function (req) {
+            console.log(req);
+            for (var i = 0; i < req.data.list.length; i++) {
+                switch(req.data.list[i].link_type){
+                    case 0:
+                        $("#blogroll").append("<li>" +
+                            "<a href='"+req.data.list[i].link_url+"'>" +
+                            "<span style='color:blue;font-size: 22px;'>"+req.data.list[i].link_name+"</span>-"+req.data.list[i].link_description+
+                            "</a>" +
+                            "</li>");
+                        break;
+                    case 1:
+                        $("#Websites").append("<li>" +
+                            "<a href='"+req.data.list[i].link_url+"'>" +
+                            "<span style='color:blue;font-size: 22px;'>"+req.data.list[i].link_name+"</span>-"+req.data.list[i].link_description+
+                            "</a>" +
+                            "</li>");
+                        break;
+                    case 2:
+                        $("#melink").append("<li>" +
+                            "<a href='"+req.data.list[i].link_url+"'>" +
+                            "<span style='color:blue;font-size: 22px;'>"+req.data.list[i].link_name+"</span>-"+req.data.list[i].link_description+
+                            "</a>" +
+                            "</li>");
+                        break;
+                }
+            }
+            $("#blog_content").text(req.data.list[0].link_name);
+        }
+    });
+</script>
+<script>
+    //在页面上点击时冒出爱心
+    $(function () {
+        var icon = ['你点击了一下', '❤', '❉', '♋', '☯', '赞'];
+        var colorarr = ['green', 'red', 'blue', 'yellow'];
+        $('#tb').click(function (e) {
+            var index = Math.round(Math.random() * icon.length);
+            var index2 = Math.round(Math.random() * colorarr.length);
+            var $i = $('<b></b>').text(icon[index]);//双数显示这个
+            var x = e.pageX, y = e.pageY;//获取鼠标点击的位置坐标
+            $i.css({
+                "z-index": 9999,
+                "top": y - 20,
+                "left": x,
+                "position": "absolute",
+                "color": colorarr[index2],
+                "font-size": 14,
+            });
+            $("body").append($i);
+            $i.animate({
+                "top": y - 180,
+                "opacity": 0
+            }, 1500, function () {
+                $i.remove();
+            });//设置动画
+        });
+    });
+
+    //定时器用来每次来改变选中的标签里面的内容即可
+    function time() {
+        var date = new Date();//创建一个日期对象
+        var xs = date.getHours();
+        var fz = date.getMinutes();
+        var miao = date.getSeconds()
+        setTimeout(time, 1000);//递归函数
+    }
+
+    time();//调用函数
+    //滚动了滚动条使进度条加载
+    $(window).bind('scroll', function () {
+        var soun = document.documentElement.scrollTop + document.body.scrollTop;
+        if (soun > 0) {
+            $(".progressbar-b").animate({"width": soun + 1390}, 100)
+        } else {
+            $(".progressbar-b").animate({"width": soun}, 100)
+        }
+    })
+</script>
+</body>
+</html>

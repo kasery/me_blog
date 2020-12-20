@@ -1,0 +1,79 @@
+body{
+    overflow-x: hidden;
+}
+.container {
+    padding: 20px;
+    width: 1625px;
+}
+.container_box {
+    background: #fff;
+    border: 1px solid #dad6d6;
+    border-top: 5px solid #00FFFF;
+    border-radius: 5px;
+}
+.container_box_title {
+    padding: 20px;
+    border-bottom: 1px solid #dad6d6;
+    margin-bottom: 30px;
+}
+.container_box_input {
+    padding: 20px;
+}
+.container_box_input input[type=text],select{
+    width: 450px;
+    height: 30px;
+    margin-bottom: 20px;
+    margin-right: 65px;
+}
+.container_box_checked {
+    height: 200px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+.container_box_input h2 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.container_box_checked input[type=checkbox] {
+    width:20px;
+    height:20px;
+    margin-right: 5px;
+}
+.container_box_checked p {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+/*滚动条样式*/
+.container_box_checked::-webkit-scrollbar {
+    width: 4px;
+    /*height: 4px;*/
+}
+.container_box_checked::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.2);
+}
+.container_box_checked::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 0;
+    background: rgba(0,0,0,0.1);
+}
+.container_box_bottom {
+    padding: 20px;
+    flex-direction: row-reverse;
+    display: flex;
+}
+.container_box_bottom button{
+    border: 1px solid #eeeeee;
+    width: 120px;
+    height:50px;
+    color: #fff;
+    margin-right: 20px;
+    font-size: 16px;
+}
+.container_box_bottom button:last-child{
+    background: #6c757d;
+}
+.container_box_bottom button:first-child{
+    background: #00a8c6;
+}

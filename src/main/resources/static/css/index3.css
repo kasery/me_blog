@@ -1,0 +1,19 @@
+.container_box_input {
+    border-bottom: 1px solid #EEEEEE;
+    padding-bottom: 10px;
+}
+.container_box_table {
+    padding:20px
+}
+.status_1,.status_0 {
+    width:70px;
+    height: 30px;
+    color:#fff;
+    text-align: center;
+}
+.status_1 {
+    background: green;
+}
+.status_0 {
+    background: #6c757d;
+}

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>个人博客</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="">
+    <meta name="description" content="个人博客">
+    <link th:href="@{css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{css/ll-css.css}" rel="stylesheet">
+    <link th:href="@{css/font-awesome.min.css}" rel="stylesheet">
+    <link th:href="@{css/style.css}" rel="stylesheet">
+    <link th:href="@{css/style4.css}" rel="stylesheet">
+    <link th:href="@{css/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css2/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css3/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css4/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css5/iconfont.css}" rel="stylesheet"/>
+    <link th:href="@{layui/css/layui.css}" rel="stylesheet">
+    <link rel="icon" href="img/head.jpg" type="image/x-icon">
+    <style>
+        .nav_box_left a, .nav_box_right a {
+            color: rgba(236, 250, 255, 0.8);
+        }
+
+        .nav_box_left a:hover, .nav_box_right a:hover {
+            color: rgba(165, 250, 255, 0.8);
+        }
+
+        .blog_context h2 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            word-break: break-all;
+            overflow: hidden;
+        }
+
+        .blog_context h2 :hover {
+            color: green;
+        }
+
+        .blog_cover_img {
+            width: 300px;
+            height: 250px;
+        }
+
+        #search_button:focus {
+            outline: 0px dotted;
+            outline: 0px auto -webkit-focus-ring-color;
+        }
+
+        .blog_in {
+            color:#C7C7C7;
+            font-size: 18px;
+        }
+
+        .blog_title_category {
+            font-size: 24px;
+            cursor:pointer;
+        }
+
+        .blog_tag {
+            cursor:pointer;
+        }
+        .gusbox {
+            position: relative;
+            width: 1000px;
+            max-width: 80%;
+            border: 3px solid #797979;
+            border-top: 0;
+            text-align: center;
+            margin: 40px auto;
+            font-family: "Noto Sans SC";
+            font-weight: 100;
+        }
+        .poem-border {
+            position: absolute;
+            height: 2px;
+            width: 27%;
+            background-color: #797979;
+        }
+        .poem-left {
+            left:0px;
+        }
+        .poem-right{
+            right:-1px;
+        }
+        .gusbox h1{
+            position: relative;
+            margin-top: -20px;
+            display: inline-block;
+            letter-spacing: 4px;
+            color: #797979;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        #poem_info {
+            font-size: 15px;
+            margin: 15px auto;
+            font-family: "fangsong";
+            font-weight: 100;
+        }
+        #poem_sentence {
+            font-size: 25px;
+            font-family: "fangsong";
+            font-weight: 100;
+        }
+    </style>
+</head>
+<body>
+<div class="bk-box" id="tb">
+    <nav class="nav" th:fragment="nav">
+        <div class="nav_box">
+            <div class="nav_box_left">
+                <div><a href="/index" id="websiteName"></a></div>
+            </div>
+            <div class="nav_box_right">
+                <div><a href="/index">主页</a></div>
+                <div><a href="/LinkContent">友链</a></div>
+                <div><a href="/BlogContent?blog_id=1">关于</a></div>
+            </div>
+        </div>
+    </nav>
+    <!-- 博客美图 -->
+    <div class="ll-header container-fluid" id="im">
+        <canvas id="c" style="width: 100%;height: 560px;display: block;background: url(img/wzback.png) center center/cover no-repeat rgb(34, 34, 34);"></canvas>
+        <div class="ll-logo intro">
+            <h1 class="bk-title1">
+                <a href="#">个人博客</a>
+            </h1>
+            <h2 class="bk-title2" style="display: none;">可以说，人是立足于希望之上的，除了希望他别无所有。</h2>
+            <h3 class="bk-title3" style="display: none;">Man is, properly
+                speaking, based upon hope; he has no other possession but hope.</h3>
+            <div class="bk-fhdb">
+                <a href="#wz" class="fhdb" title="去到文章"><i
+                        class="iconfont icon-arrow-down"
+                        style="font-size: 24px; color: #fff; opacity: 0.6;"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="gusbox">
+        <div class="poem-border poem-left"></div>
+        <div class="poem-border poem-right"></div>
+        <h1>一句古诗</h1>
+        <div id="poem_sentence"></div>
+        <div id="poem_info"></div>
+    </div>
+    <!-- 博客文章 -->
+    <div class="container ll-cantainer"
+         style="background-color: rgba(255, 255, 255, 0.9);" id="wz">
+        <div class="ll-card">
+            <div class="row">
+                <!-- 显示文章 -->
+                <div class="bk_context_left" id="bk_context_left">
+                    <div id="blog_context"></div>
+                    <div id="page"></div>
+                </div>
+                <div class="bk_context_right">
+                    <div>
+                        <!--搜索 -->
+                        <div class="bk_context_right_box1">
+                            <h3 class="blog_tag_title">搜索文章</h3>
+                            <div class="search_box tag_box">
+                                <input type="text" class="search_box_input" id="search_input"/>
+                                <button class="search_box_button" id="search_button"><i
+                                        class="iconfont icon-sousuo"></i></button>
+                            </div>
+                        </div>
+                        <!-- 热门标签 -->
+                        <div class="bk_context_right_box2" id="bk_context_right_box2">
+                            <h3 class="blog_tag_title">热门标签</h3>
+                            <div class="tag_box" id="tag_box">
+                            </div>
+                        </div>
+                        <!-- 最新发布 -->
+                        <div class="bk_context_right_box3">
+                            <h3 class="blog_tag_title">最新发布</h3>
+                            <div class="tag_box" id="new_box">
+                            </div>
+                        </div>
+                        <!-- 点击最多 -->
+                        <div class="bk_context_right_box4">
+                            <h3 class="blog_tag_title">点击最多</h3>
+                            <div class="tag_box" id="click_box">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 博客底部 -->
+    <div class="container-fluid ll-footer">
+        <div class="container">
+            <p class="ll-footer-link">
+                <span id="footerAbout">&copy; </span>
+                <span> Powered by </span>
+                <span id="footerCopyRight"></span>
+            </p>
+            <p class="ll-footer-link">
+                <span id="footerICP"></span>
+                <span>❤Theme Amaze by spiritree & jiahao.Zhang</span>
+            </p>
+        </div>
+    </div>
+</div>
+<!-- 返回头部 -->
+<div class="bk-fhtb">
+    <a href="#tb" title="返回头部" class="fhtb">
+        <i class="iconfont icon-shang" style="font-size: 30px"></i>
+    </a>
+</div>
+<!-- 进度条 -->
+<div class="progressbar">
+    <div class="progressbar-b"></div>
+</div>
+<script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+<script th:src="@{js/ribbon.js}"></script>
+<script th:src="@{js/jquery.min.js}"></script>
+<script th:src="@{js/bootstrap.min.js}"></script>
+<script th:src="@{js/TweenMax.min.js}"></script>
+<script th:src="@{js/index.js}"></script>
+<script th:src="@{js/jquery.js}"></script>
+<script th:src="@{layui/layui.js}"></script>
+<script>
+    //记录博客访问量
+    $.ajax({
+        url:"blog/view",
+        success:function(req){
+            console.log("浏览量添加条数："+req);
+        }
+    })
+    //查询出网站名称,配置
+    var yourname;
+    $.ajax({
+        url: "blog/config",
+        success: function (req) {
+            console.log("配置" + req.data);
+            for (var i = 0; i < req.data.length; i++) {
+                $("#" + req.data[i].config_name).append(req.data[i].config_value);
+                $("."+req.data[i].config_name).append(req.data[i].config_value);
+                if(req.data[i].config_name == "yourName"){
+                    yourname = req.data[i].config_value;
+                }
+            }
+        },
+    });
+    //查询出博客文章
+    $.ajax({
+        url: "txt/findAll",
+        success: function (req) {
+            console.log("查询出博客文章1：");
+            console.log(req.data)
+            console.log(req.data.list)
+            layui.use('laypage', function () {
+                var laypage = layui.laypage;
+                //执行一个laypage实例
+                console.log("分页的总数：" + req.data.size);
+                laypage.render({
+                    elem: 'page' //注意，这里的 test1 是 ID，不用加 # 号
+                    , count: req.data.size //数据总数，从服务端得到
+                    , limit: 5
+                    , jump: function (obj, first) {
+                        //obj包含了当前分页的所有参数，比如：
+                        console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                        console.log(obj.limit); //得到每页显示的条数
+                        if (first) {
+                            $.ajax({
+                                url: "txt/findAll",
+                                data: {
+                                    page: obj.curr,
+                                    limit: obj.limit
+                                },
+                                success: function (req) {
+                                    console.log("查询出博客文章1：");
+                                    console.log(req.data)
+                                    console.log(req.data.list)
+                                    for (var i = 0; i < req.data.list.length; i++) {
+                                        $("#new_box").append("<div class='new_blog_txt'><a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" + req.data.list[i].blog_title + "</a></div>");
+                                        $("#blog_context").append("<div style='margin-bottom: 5px;border-bottom: 1px solid #eee'> " +
+                                            "<div class='bk_context_box'> " +
+                                            "<div class='bk_context_box_left'> " +
+                                            "<a class='article_img' href='/BlogContent?blog_id=1'> " +
+                                            "<img src='img/01_fuko.jpg' class='me_img' > " +
+                                            "</a>" +
+                                            "<span style='font-size: 24px;' class='yourName'><a href='/BlogContent?blog_id=1'>"+yourname+"</a></span> " +
+                                            "<span class='blog_in'>in</span> <span class='blog_title_category'>" + req.data.list[i].blog_category_name + "</span> " +
+                                            "</div> " +
+                                            "<div class='bk_context_box_right'> " +
+                                            "<span>" + req.data.list[i].create_time.split(' ')[0] + "</span>" +
+                                            "</div> " +
+                                            "</div>" +
+                                            "</div>" +
+                                            "<!-- 用来存放文章标题和图片 -->" +
+                                            "<div class='blog_context' style='padding-bottom: 30px;border-bottom: 1px solid #eee;margin-bottom: 5%;'>" +
+                                            "<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" +
+                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' src=" + req.data.list[i].blog_cover_image + ">" +
+                                            "</a>" +
+                                            "</div>"
+                                        );
+                                    }
+                                },
+                            });
+                        }
+                        //首次不执行
+                        if (!first) {
+                            $.ajax({
+                                url: "txt/findAll",
+                                data: {
+                                    page: obj.curr,
+                                    limit: obj.limit
+                                },
+                                success: function (req) {
+                                    console.log("查询出博客文章2：");
+                                    console.log(req.data);
+                                    console.log(req.data.list);
+                                    $("#blog_context").html(" ");
+                                    for (var i = 0; i < req.data.list.length; i++) {
+                                        $("#new_box").append("<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" + req.data.list[i].blog_title + "</a></div>");
+                                        $("#blog_context").append("<div style='margin-bottom: 5px;border-bottom: 1px solid #eee'> " +
+                                            "<div class='bk_context_box'> " +
+                                            "<div class='bk_context_box_left'> " +
+                                            "<a class='article_img' href='/BlogContent?blog_id=1'> " +
+                                            "<img src='img/01_fuko.jpg' class='me_img' > " +
+                                            "</a>" +
+                                            "<span style='font-size: 24px;'><a href='/BlogContent?blog_id=1'>"+yourname+"</a></span> " +
+                                            "<span class='blog_in'>in</span> <span class='blog_title_category'>" + req.data.list[i].blog_category_name + "</span> " +
+                                            "</div> " +
+                                            "<div class='bk_context_box_right'> " +
+                                            "<span>" + req.data.list[i].create_time.split(' ')[0] + "</span>" +
+                                            "</div> " +
+                                            "</div>" +
+                                            "</div>" +
+                                            "<!-- 用来存放文章标题和图片 -->" +
+                                            "<div class='blog_context' style='padding-bottom: 30px;border-bottom: 1px solid #eee;margin-bottom: 5%;'>" +
+                                            "<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" +
+                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' src=" + req.data.list[i].blog_cover_image + ">" +
+                                            "</a>" +
+                                            "</div>"
+                                        );
+                                    }
+                                },
+                            });
+                        }
+                    }
+                });
+            });
+        },
+    });
+    //查询出热门标签
+    $.ajax({
+        url: "blog/tagFindAll",
+        success: function (req) {
+            console.log("查询出热门标签：")
+            console.log(req.data)
+            var arr = [];
+            for (var i = 0; i < req.data.list.length; i++) {
+                arr.push(req.data.list[i].tag_name)
+                $("#tag_box").append("<div class='blog_tag'>" + req.data.list[i].tag_name + "<span id=tag_num" + i + "></span></div>");
+            }
+
+            $.ajax({
+                url: "txt/findAll",
+                success: function (req) {
+                    console.log("查询出热门标签：");
+                    console.log(req.data)
+                    console.log(req.data.list);
+                    console.log(arr);
+                    for (var x = 0; x < arr.length; x++) {
+                        var num = 0;
+                        for (var i = 0; i < req.data.list.length; i++) {
+                            //$("#new_box").append("<div class='new_blog_txt'><a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" + req.data.list[i].blog_title + "</a></div>");
+                            if (req.data.list[i].blog_tags.includes(arr[x])) {
+                                num++;
+                                $("#tag_num" + x).html("(" + num + ")");
+                            }
+                        }
+                    }
+                },
+            });
+        },
+    });
+    //设置标签点击事件
+    $("#tag_box").off("click").on("click", "div", function (event) {
+        event.stopPropagation();//阻止冒泡事件    阻止点击事件向上传播
+        var str = $(this).text().substring($(this).text().indexOf("("),$(this).text().lastIndexOf(")")+1)
+        var blog_tags = $(this).text().replace(str,"");
+        $.ajax({
+            url: "txt/findAllByTag",
+            data: {
+                "blog_tags": blog_tags
+            },
+            success: function (req) {
+                console.log("根据标签查询出来的数据：");
+                console.log(req.data)
+                layui.use('laypage', function () {
+                    var laypage = layui.laypage;
+                    //执行一个laypage实例
+                    console.log("分页的总数：" + req.data.size);
+                    laypage.render({
+                        elem: 'page' //注意，这里的 test1 是 ID，不用加 # 号
+                        , count: req.data.size //数据总数，从服务端得到
+                        , limit: 5
+                        , jump: function (obj, first) {
+                            //obj包含了当前分页的所有参数，比如：
+                            console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                            console.log(obj.limit); //得到每页显示的条数
+
+                            $.ajax({
+                                url: "txt/findAllByTag",
+                                data: {
+                                    "blog_tags": blog_tags,
+                                    "page": obj.curr,
+                                    "limit": obj.limit
+                                },
+                                success: function (req) {
+                                    $("#blog_context").html("");
+                                    console.log("根据标签查询出博客文章：");
+                                    console.log(req.data)
+                                    console.log(req.data.list)
+                                    for (var i = 0; i < req.data.list.length; i++) {
+                                        $("#blog_context").append("<div style='margin-bottom: 5px;border-bottom: 1px solid #eee'> " +
+                                            "<div class='bk_context_box'> " +
+                                            "<div class='bk_context_box_left'> " +
+                                            "<a class='article_img' href='/BlogContent?blog_id=1'> " +
+                                            "<img src='img/01_fuko.jpg' class='me_img' > " +
+                                            "</a> " +
+                                            "<span style='font-size: 24px;'><a href='/BlogContent?blog_id=1'>"+yourname+"</a></span> " +
+                                            "<span class='blog_in'>in</span> <span class='blog_title_category'>" + req.data.list[i].blog_category_name + "</span> " +
+                                            "</div> " +
+                                            "<div class='bk_context_box_right'> " +
+                                            "<span>" + req.data.list[i].create_time.split(' ')[0] + "</span>" +
+                                            "</div> " +
+                                            "</div>" +
+                                            "</div>" +
+                                            "<!-- 用来存放文章标题和图片 -->" +
+                                            "<div class='blog_context' style='padding-bottom: 30px;border-bottom: 1px solid #eee;margin-bottom: 5%;'>" +
+                                            "<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" +
+                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' src=" + req.data.list[i].blog_cover_image + ">" +
+                                            "</a>" +
+                                            "</div>"
+                                        );
+                                    }
+                                },
+                            });
+                        }
+                    });
+                });
+            },
+        });
+    });
+    //查询出点击最多
+    $.ajax({
+        url: "txt/clickFindAll",
+        success: function (req) {
+            console.log("查询出点击最多的文章：")
+            console.log(req.data)
+            for (var i = 0; i < req.data.list.length; i++) {
+                $("#click_box").append("<div class='new_blog_txt'>" +
+                    "<a href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" + req.data.list[i].blog_title +
+                    "</a>" +
+                    "</div>");
+            }
+        },
+    });
+    $("#search_button").click(function () {
+        $.ajax({
+            url: "txt/findAll",
+            data: {
+                "blog_title": $("#search_input").val()
+            },
+            success: function (req) {
+                console.log("根据标题查询出来的数据：");
+                console.log(req.data)
+                layui.use('laypage', function () {
+                    var laypage = layui.laypage;
+                    //执行一个laypage实例
+                    console.log("分页的总数：" + req.data.size);
+                    laypage.render({
+                        elem: 'page' //注意，这里的 test1 是 ID，不用加 # 号
+                        , count: req.data.size //数据总数，从服务端得到
+                        , limit: 5
+                        , jump: function (obj, first) {
+                            //obj包含了当前分页的所有参数，比如：
+                            console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                            console.log(obj.limit); //得到每页显示的条数
+
+                            $.ajax({
+                                url: "txt/findAll",
+                                data: {
+                                    "blog_title": $("#search_input").val(),
+                                    "page": obj.curr,
+                                    "limit": obj.limit
+                                },
+                                success: function (req) {
+                                    $("#blog_context").html("");
+                                    console.log("查询出博客文章3：");
+                                    console.log(req.data)
+                                    console.log(req.data.list)
+                                    for (var i = 0; i < req.data.list.length; i++) {
+                                        $("#blog_context").append("<div style='margin-bottom: 5px;border-bottom: 1px solid #eee'> " +
+                                            "<div class='bk_context_box'> " +
+                                            "<div class='bk_context_box_left'> " +
+                                            "<a class='article_img' href='/BlogContent?blog_id=1'> " +
+                                            "<img src='img/01_fuko.jpg' class='me_img' > " +
+                                            "</a> " +
+                                            "<span style='font-size: 24px;'><a href='/BlogContent?blog_id=1'>"+yourname+"</a></span> " +
+                                            "<span class='blog_in'>in</span> <span class='blog_title_category'>" + req.data.list[i].blog_category_name + "</span> " +
+                                            "</div> " +
+                                            "<div class='bk_context_box_right'> " +
+                                            "<span>" + req.data.list[i].create_time.split(' ')[0] + "</span>" +
+                                            "</div> " +
+                                            "</div>" +
+                                            "</div>" +
+                                            "<!-- 用来存放文章标题和图片 -->" +
+                                            "<div class='blog_context' style='padding-bottom: 30px;border-bottom: 1px solid #eee;margin-bottom: 5%;'>" +
+                                            "<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" +
+                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' src=" + req.data.list[i].blog_cover_image + ">" +
+                                            "</a>" +
+                                            "</div>"
+                                        );
+                                    }
+                                },
+                            });
+                        }
+                    });
+                });
+            },
+        });
+    });
+
+    $("#blog_context").off("click").on("click",".blog_title_category",function(event){
+        event.stopPropagation();//阻止冒泡事件    阻止点击事件向上传播
+        var blog_category_name = $(this).text();
+        console.log(blog_category_name);
+        $.ajax({
+            url: "txt/findAll",
+            data: {
+                "blog_title": $(this).text()
+            },
+            success: function (req) {
+                console.log("根据分类查询出来总数：");
+                console.log(req.data)
+                layui.use('laypage', function () {
+                    var laypage = layui.laypage;
+                    //执行一个laypage实例
+                    console.log("分页的总数：" + req.data.size);
+                    laypage.render({
+                        elem: 'page' //注意，这里的 test1 是 ID，不用加 # 号
+                        , count: req.data.size //数据总数，从服务端得到
+                        , limit: 5
+                        , jump: function (obj, first) {
+                            //obj包含了当前分页的所有参数，比如：
+                            console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                            console.log(obj.limit); //得到每页显示的条数
+                            console.log(blog_category_name)
+                            $.ajax({
+                                url: "txt/findAll",
+                                data: {
+                                    "blog_title": blog_category_name,
+                                    "page": obj.curr,
+                                    "limit": obj.limit
+                                },
+                                success: function (req) {
+                                    $("#blog_context").html("");
+                                    console.log("根据分类查询出数据：");
+                                    console.log(req.data)
+                                    console.log(req.data.list)
+                                    for (var i = 0; i < req.data.list.length; i++) {
+                                        $("#blog_context").append("<div style='margin-bottom: 5px;border-bottom: 1px solid #eee'> " +
+                                            "<div class='bk_context_box'> " +
+                                            "<div class='bk_context_box_left'> " +
+                                            "<a class='article_img' href='/BlogContent?blog_id=1'> " +
+                                            "<img src='img/01_fuko.jpg' class='me_img' > " +
+                                            "</a> " +
+                                            "<span style='font-size: 24px;'><a href='/BlogContent?blog_id=1'>"+yourname+"</a></span> " +
+                                            "<span class='blog_in'>in</span> <span class='blog_title_category'>" + req.data.list[i].blog_category_name + "</span> " +
+                                            "</div> " +
+                                            "<div class='bk_context_box_right'> " +
+                                            "<span>" + req.data.list[i].create_time.split(' ')[0] + "</span>" +
+                                            "</div> " +
+                                            "</div>" +
+                                            "</div>" +
+                                            "<!-- 用来存放文章标题和图片 -->" +
+                                            "<div class='blog_context' style='padding-bottom: 30px;border-bottom: 1px solid #eee;margin-bottom: 5%;'>" +
+                                            "<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" +
+                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' src=" + req.data.list[i].blog_cover_image + ">" +
+                                            "</a>" +
+                                            "</div>"
+                                        );
+                                    }
+                                },
+                            });
+                        }
+                    });
+                });
+            },
+        });
+    });
+</script>
+<script>
+    //移出博客文章封面时回到原来大小
+    $("#blog_context").off("mouseleave").on("mouseleave",".blog_cover_img",function(event){
+        event.stopPropagation();//阻止冒泡事件    阻止点击事件向上传播
+        $(this).animate({"width": "300px","height":"250px"}, "slow");
+    });
+    //滚动滚动条使进度条加载
+    $(window).bind('scroll', function () {
+        var soun = document.documentElement.scrollTop + document.body.scrollTop;
+        if (soun > 0) {
+            $(".progressbar-b").animate({"width": soun}, 100)
+        } else {
+            $(".progressbar-b").animate({"width": soun}, 100)
+        }
+    })
+    //在页面上点击时冒出爱心
+    $(function () {
+        var height = $(window).width();
+        $('#tb').css({
+            'height': height,
+        });
+        var icon = ['你点击了一下', '❤', '❉', '♋', '☯', '赞'];
+        var colorarr = ['green', 'red', 'blue', 'yellow'];
+        $('#tb').click(function (e) {
+            var index = Math.round(Math.random() * icon.length);
+            var index2 = Math.round(Math.random() * colorarr.length);
+            var $i = $('<b></b>').text(icon[index]);//双数显示这个
+            var x = e.pageX, y = e.pageY;//获取鼠标点击的位置坐标
+            $i.css({
+                "z-index": 9999,
+                "top": y - 20,
+                "left": x,
+                "position": "absolute",
+                "color": colorarr[index2],
+                "font-size": 14,
+            });
+            $("body").append($i);
+            $i.animate({
+                "top": y - 180,
+                "opacity": 0
+            }, 1500, function () {
+                $i.remove();
+            });//设置动画
+        });
+    });
+    //点击锚点跳转的过渡效果
+    $('.fhdb').click(function () {
+        $('html, body').animate({
+            scrollTop: $($.attr(this, 'href')).offset().top + "px"
+        }, 500);
+        return false;
+    });
+    $('.fhtb').click(function () {
+        $('html, body').animate({
+            scrollTop: $($.attr(this, 'href')).offset().top + "px"
+        }, 500);
+        return false;
+    });
+    //让下箭头上下跳动
+    setInterval(function () {
+        msg();
+    }, 200)
+
+    function msg() {
+        var ys = $(".bk-fhdb")
+        if (!($(ys).is(":animated"))) {
+            $(ys).animate({"top": "-6px",}, 200).animate({"top": "-0px",}, 200)
+                .animate({"top": "-3px",}, 200).animate({"top": "-0px",}, 200)
+                .animate({"top": "-1px",}, 200).animate({"top": "-1px",}, 200);
+        }
+    }
+
+    //页面加载时触发动画
+    $(document).ready(function () {
+        $(".bk-title1").animate({fontSize: '75px'}, "slow")
+            .animate({fontSize: '78px'}, 200).animate({fontSize: '80px'}, 200)
+            .animate({fontSize: '83px'}, 200).animate({fontSize: '85px'}, 200);
+        $(".bk-title2").slideDown(2000);
+        $(".bk-title3").slideDown(3000);
+    });
+    //当页面滚动条卷过的高度超过im-200的高就打开上箭头,关闭导航栏
+    $(window).bind('scroll', function () {
+        var soun = document.documentElement.scrollTop + document.body.scrollTop;
+        var height = document.getElementById("im").offsetHeight - 300;
+        if (soun > height) {
+            $(".bk-fhdb").css("display", "none");
+            $(".bk-fhtb").css("display", "block");
+            $(".nav_box").css("display", "none")
+        } else {
+            $(".bk-fhtb").css("display", "none");
+            $(".bk-fhdb").css("display", "block");
+            $(".nav_box").css("display", "block")
+        }
+    })
+</script>
+<script type="text/javascript">
+    jinrishici.load(function(result) {
+        var sentence = document.querySelector("#poem_sentence")
+        var info = document.querySelector("#poem_info")
+        sentence.innerHTML = result.data.content
+        info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '《' + result.data.origin.title + '》'
+    });
+</script>
+</body>
+</html>

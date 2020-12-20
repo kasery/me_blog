@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑</title>
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{font-awesome-4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{css/index2.css}">
+    <!--Editor.md-->
+    <link rel="stylesheet" th:href="@{editor/css/editormd.css}"/>
+    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+<div class=" layui-main" style="margin: 20px 30px 0px 30px">
+    <input type="hidden" id="blog_id" name="blog_id" />
+    <div class="layui-form-item" style="font-size: 24px;">
+        标题：<input type="text" name="blog_title" class="layui-input blog_title" style="display: inline-block;width: 85%;">
+    </div>
+    <div class="layui-form-item" style="font-size: 24px;">
+        博客封面图：
+        <img class="blog_cover_image" style="width: 130px;height: 130px;" id="blog_cover_image"/>
+    </div>
+    <!-- 博客状态 -->
+    <div class="layui-form-item" style="font-size: 24px;">
+        状态：
+        <select class="blog_status" style="width: 200px;height: 40px;">
+
+        </select>
+    </div>
+    <div class="container_box_checked">
+
+    </div>
+    <!-- 博客分类 -->
+    <div class="layui-form-item" style="font-size: 24px;">
+        分类：
+        <select class="blog_category_id_name" style="width: 200px;height: 40px;">
+
+        </select>
+    </div>
+
+</div>
+<div style="font-size: 24px;margin-left: 2.3%;">文章内容：</div>
+<div id="article-content">
+    <textarea name="content" id="content" style="display:none;"> </textarea>
+</div>
+<div class="layui-form-item" style="margin-left: 2.3%;">
+    <button class="layui-btn" id="edit_btn">保存文章</button>
+</div>
+
+<script th:src="@{editor/examples/js/jquery.min.js}"></script>
+<script th:src="@{editor/editormd.js}"></script>
+<script th:src="@{layui/layui.js}"></script>
+<script th:src="@{js/util.js}"></script>
+<script>
+    //获取分类
+    var categorys = [];
+    $.ajax({
+        url: "blog/classify",
+        type: "post",
+
+        success: function (res) {
+            var category = $(".blog_category_id_name");
+            for (var i = 0; i < res.data.length; i++) {
+                category.append("<option value=" + res.data[i].category_id + "," + res.data[i].category_name + ">" + res.data[i].category_name + "</option>");
+                categorys.push(res.data[i].category_id);
+            }
+        }
+    })
+    //标签查询
+    $.ajax({
+        url:"blog/lable",
+        type:"post",
+
+        success:function(res){
+            var category = $(".container_box_checked");
+            for(var i = 0;i < res.data.length;i++){
+                category.append("<p><input type='checkbox' value="+res.data[i].tag_name+" name='tag' />"+res.data[i].tag_name+" </p>");
+            }
+        }
+    })
+</script>
+<script type="text/javascript">
+    layui.use(['form', 'jquery','upload'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        var upload = layui.upload;
+        //获取路径上的参数
+        var data = getQueryString();
+        console.log(data);
+
+        //根据id查询出要编辑的数据
+        $.ajax({
+            url: "blog/findById",
+            data: data,
+            success: function (req) {
+                console.log(req);
+                $("#blog_id").val(req.data.blog_id);
+                $(".blog_title").val(req.data.blog_title);
+                $(".blog_cover_image").attr("src",req.data.blog_cover_image);
+                $("#content").val(req.data.blog_content);
+
+                if (req.data.blog_status != 0) {
+                    $(".blog_status").append("<option value='1'>发布</option><option value='0'>草稿</option>");
+                } else {
+                    $(".blog_status").append("<option value='0'>草稿</option><option value='1'>发布</option>")
+                }
+                for(var y = 0;y<categorys.length;y++){
+                    if(req.data.blog_category_id == categorys[y]){
+                        $(".blog_category_id_name ").get(0).selectedIndex=y;  //设置Select索引值为y的项选中
+                    }
+                }
+                var edit_tags = req.data.blog_tags.split(",");
+                var checkeds = $("input[name='tag']");
+                console.log(checkeds);
+                for(var x = 0;x<checkeds.length;x++){
+                    for(var z = 0;z<edit_tags.length;z++){
+                        if(edit_tags[z] == checkeds[x].value){
+                            checkeds[x].setAttribute("checked","checked");
+                        }
+                    }
+                }
+            }
+        });
+        $("#edit_btn").click(function(){
+            var ches = [];
+            $("input[name='tag']:checked").each(function(){
+                ches.push($(this).val());
+            });
+            $.ajax({
+                url: "blog/edit_Blog",
+                type:"post",
+                data: {
+                    "blog_id" : $("#blog_id").val()
+                    ,"blog_title": $(".blog_title").val()
+                    ,"blog_status": $(".blog_status").val()
+                    ,"blog_tags":ches
+                    ,"blog_category_id_name": $(".blog_category_id_name").val()
+                    ,"blog_content": $("#content").val()
+                },
+                success: function (req) {
+                    console.log(req);
+                    if (req.code == 0) {
+                        if(req.data > 0){
+                            return layer.alert(req.msg,function(index){
+                                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                parent.layer.close(index);
+                                parent.layui.table.reload('testReload');
+                            })
+                        }else {
+                            layer.alert("修改失败！");
+                        }
+                    } else {
+                        layer.alert("修改失败！");
+                    }
+                }
+            });
+        })
+        var uploadInst = upload.render({
+            elem: '#blog_cover_image'
+            , url: 'blog/img_edit'
+            , auto: false //选择文件后不自动上传
+            , bindAction: '#edit_btn' //指向一个按钮触发上传
+            , data:{
+                blog_id:function(){
+                    return  $("#blog_id").val();
+                },
+                blog_title:function(){
+                    return $(".blog_title").val();
+                },
+                blog_status:function(){
+                    return $(".blog_status").val();
+                },
+                blog_tags:function(){
+                    var ches = [];
+                    $("input[name='tag']:checked").each(function(){
+                        ches.push($(this).val());
+                    });
+                    return ches;
+                },
+                blog_category_id_name:function(){
+                    return $(".blog_category_id_name").val();
+                },
+                blog_content:function(){
+                    return $("#content").val();
+                },
+                blog_cover_image:function(){
+                    return $("#blog_cover_image").attr("src");
+                }
+            }
+            , before: function (obj) {
+                obj.preview(function (index, file, result) {
+                    $('#blog_cover_image').attr('src', result);
+                });
+            }
+            , done: function (res) {
+                console.log(res);
+            }
+            , error: function () {
+                layer.alert("上传失败,请重新上传");
+            }
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    var testEditor;
+
+    //window.onload = function(){ }
+    $(function () {
+        testEditor = editormd("article-content", {
+            width: "95%",
+            height: 500,
+            syncScrolling: "single",
+            path: "editor/lib/",
+            saveHTMLToTextarea: true,    // 保存 HTML 到 Textarea
+            emoji: true,
+            theme: "dark",//工具栏主题
+            previewTheme: "dark",//预览主题
+            editorTheme: "pastel-on-dark",//编辑主题
+            tex: true,                   // 开启科学公式TeX语言支持，默认关闭
+            flowChart: true,             // 开启流程图支持，默认关闭
+            sequenceDiagram: true,       // 开启时序/序列图支持，默认关闭,
+            //图片上传
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL: "/article/file/upload",
+            onload: function () {
+                console.log('onload', this);
+            },
+            /*指定需要显示的功能按钮*/
+            toolbarIcons: function () {
+                return ["undo", "redo", "|",
+                    "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
+                    "h1", "h2", "h3", "h4", "h5", "h6", "|",
+                    "list-ul", "list-ol", "hr", "|",
+                    "link", "reference-link", "image", "code", "preformatted-text",
+                    "code-block", "table", "datetime", "emoji", "html-entities", "pagebreak", "|",
+                    "goto-line", "watch", "preview", "fullscreen", "clear", "search", "|",
+                    "help", "info", "releaseIcon", "index"]
+            },
+        });
+    });
+</script>
+</body>
+</html>

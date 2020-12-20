@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加页面</title>
+    <style>
+        .category_box {
+            padding: 20px;
+        }
+        .category_box_item {
+            margin-bottom: 20px;
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}">
+</head>
+<body>
+    <input type="hidden" id="category_id" name="category_id" />
+    <div class="category_box">
+        <div class="category_box_item">
+            <label for="category_name">分类名称：</label>
+            <input type="text" id="category_name" name="category_name" class="category_name" style="width: 300px;height:30px;">
+        </div>
+        <div class="category_box_item">
+            <label for="category_icon">分类图标：</label>
+            <img id="category_icon" class="category_icon" style="width: 130px;height: 130px;"/>
+        </div>
+        <div class="category_box_item">
+          <button class="layui-btn" id="edit_btn">修改</button>
+        </div>
+    </div>
+    <script th:src="@{js/jquery.min.js}"></script>
+    <script th:src="@{layui/layui.js}"></script>
+    <script th:src="@{js/util.js}"></script>
+    <script>
+        layui.use(['form', 'jquery','upload'], function () {
+            var form = layui.form;
+            var $ = layui.jquery;
+            var upload = layui.upload;
+            var data = getQueryString();
+            console.log(data);
+
+            $.ajax({
+                url: "blog/catfindById",
+                data: data,
+                success: function (req) {
+                    $("#category_id").val(req.data.category_id);
+                    $("#category_name").val(req.data.category_name);
+                    $("#category_icon").attr("src",req.data.category_icon);
+                }
+            });
+            $("#edit_btn").click(function () {
+                $.ajax({
+                    url: "blog/editcat",
+                    data: {
+                        "category_id" : $("#category_id").val()
+                        ,"category_name": $(".category_name").val()
+                    },
+                    success: function (req) {
+                        if (req > 0) {
+                            layer.alert("修改成功！", function (index) {
+                                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                parent.layer.close(index);
+                                parent.layui.table.reload('testReload');
+                            });
+                        } else {
+                            layer.alert("修改失败！");
+                        }
+                    }
+                });
+            })
+
+            var uploadInst = upload.render({
+                elem: '#category_icon'
+                , url: 'blog/img_catedit'
+                , auto: false //选择文件后不自动上传
+                , bindAction: '#edit_btn' //指向一个按钮触发上传
+                , data:{
+                    category_id:function(){
+                        return  $("#category_id").val();
+                    },
+                    category_name:function(){
+                        return $(".category_name").val();
+                    },
+                    category_icon:function(){
+                        return $("#category_icon").attr("src");
+                    }
+                }
+                , before: function (obj) {
+                    obj.preview(function (index, file, result) {
+                        $('#category_icon').attr('src', result);
+                    });
+                }
+                , done: function (res) {
+                    console.log(res);
+                }
+                , error: function () {
+                    layer.alert("上传失败,请重新上传");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

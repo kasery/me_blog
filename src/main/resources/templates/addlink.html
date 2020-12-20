@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}">
+    <style>
+        .layui-form-label{
+            /*width: 100%;*/
+            padding: 10px 0;
+            text-align: left;
+        }
+        .layui-input-block{
+            margin-left: 80px;
+        }
+        .layui-form-radio {
+            line-height: 0px;
+            margin: 0px 0px 0 0;
+            padding-right: 0px;
+            font-size: 0;
+        }
+    </style>
+</head>
+
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div>
+        <div style="padding: 20px;">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">友链类别</label>
+                    <div class="layui-input-block" style="padding-top:10px;">
+                        <input type="radio" name="link_type" value="0" checked>友链
+                        <input type="radio" name="link_type" value="1">推荐
+                        <input type="radio" name="link_type" value="2">个人网站
+                     </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">友链名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="link_name" required  lay-verify="required" placeholder="请输入友链名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">友链链接</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="link_url" required  lay-verify="required" placeholder="请输入友链url" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">友链描述</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="link_description" required  lay-verify="required" placeholder="请输入友链描述" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排序值</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="link_rank" required  lay-verify="required" placeholder="请输入排序值" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div style="margin-left: 1140px;float: right;">
+                    <button type="button" class="layui-btn" lay-submit lay-filter="sub">添加分类</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{js/jquery.min.js}"></script>
+<script th:src="@{layui/layui.js}"></script>
+<script th:src="@{js/util.js}"></script>
+
+<script type="text/javascript">
+    $(function() {
+        layui.use(['form','element','layer','util'], function() {
+            var element = layui.element;
+            var from = layui.form;
+            var layer=layui.layer;
+            var $ = layui.jquery;
+            var util = layui.util;
+
+            from.on('submit(sub)', function(data){
+                console.log(data.field)
+                $.ajax({
+                    url:"blog/add_link",
+                    type:'post',
+                    data:data.field,
+                    success:function(req){
+                        if(req>0){
+                            layer.alert("添加成功！", function (index) {
+                                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                parent.layer.close(index);
+                                parent.layui.table.reload('testReload');
+                            });
+                        }else{
+                            layer.alert("添加失败！");
+                        }
+                    }
+                });
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+        });
+    });
+</script>
+</body>
+</html>

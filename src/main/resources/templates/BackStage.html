@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{css/index.css}">
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{font-awesome-4.7.0/css/font-awesome.min.css}">
+    <title>Dashboard</title>
+    <style>
+        .nav_head_li:nth-child(1){
+            background: #007BFF;
+        }
+        .nav_head_li:nth-child(1):hover{
+            background: #007BFF;
+        }
+    </style>
+</head>
+
+<body style="overflow-x: hidden">
+<div class="my_blog" th:fragment="sidebar">
+    <div class="header">
+        <div class="head_title">
+            <p class="fa fa-grav">&nbsp;&nbsp;&nbsp;my blog</p>
+        </div>
+        <div class="head_url">
+            <img th:src="@{img/01_fuko.jpg}" alt="十七">
+            <p>&nbsp;&nbsp;&nbsp;十七</p>
+        </div>
+    </div>
+    <div class="bodyer">
+        <div class="dashboard_title">
+            <p>Dashboard</p>
+        </div>
+        <div class="dashboard_model">
+            <ul class="dashboard_model_console">
+                <li class="nav_head_li"><a href="/back" class="layui-icon layui-icon-console">&nbsp;&nbsp;&nbsp;Dashboard</a></li>
+                <li class="nav_head_li"><a href="/addblog" class="layui-icon layui-icon-edit">&nbsp;&nbsp;&nbsp;发布博客</a></li>
+            </ul>
+        </div>
+        <div class="manager_model_title">
+            <p>管理模块</p>
+        </div>
+        <div class="manager_model">
+            <ul class="manager_model_console layui-nav-item">
+                <li class="layui-nav-item nav_li"><a href="/blogmanage" class="fa fa-list-alt">&nbsp;&nbsp;&nbsp;博客管理</a></li>
+                <li class="layui-nav-item nav_li"><a href="/comment" class="layui-icon layui-icon-reply-fill">&nbsp;&nbsp;&nbsp;评论管理</a></li>
+                <li class="layui-nav-item nav_li"><a href="/category" class="fa fa-th-large">&nbsp;&nbsp;&nbsp;分类管理</a></li>
+                <li class="layui-nav-item nav_li"><a href="/tag" class="fa fa-tags">&nbsp;&nbsp;&nbsp;标签管理</a></li>
+                <li class="layui-nav-item nav_li"><a href="/link" class="layui-icon layui-icon-heart-fill">&nbsp;&nbsp;&nbsp;友情链接</a></li>
+            </ul>
+        </div>
+        <div class="system_manager_title">
+            <p>系统管理</p>
+        </div>
+        <div class="system_manager">
+            <ul class="system_manager_console">
+                <li class="nav_bottom_li"><a href="/set" class="fa fa-wrench">&nbsp;&nbsp;&nbsp;系统配置</a></li>
+                <li class="nav_bottom_li"><a href="/pass" class="fa fa-user-secret">&nbsp;&nbsp;&nbsp;修改密码</a></li>
+                <li class="nav_bottom_li"><a href="/log" class="fa fa-sign-out">&nbsp;&nbsp;&nbsp;安全退出</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="navigation" th:fragment="navbar">
+    <div class="navigation_left">
+        <a href="#" class="fa fa-reorder"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Dashboard</p>
+    </div>
+    <div class="navigation_right">
+        <a href="/index" class="fa fa-send">&nbsp;&nbsp;博客首页</a>
+        <a href="#" class="fa fa-user">&nbsp;&nbsp;作者</a>
+    </div>
+</div>
+<div class="container">
+    <div class="home_page">
+        <p>管理首页</p>
+    </div>
+    <div class="horizontal_line">
+        <hr width="100%">
+    </div>
+    <div class="container_model">
+        <div class="add_blog">
+            <a href="/addblog">
+                <div class="add_blog_left">
+                    <p class="add_blog_left_title">新增博客</p>
+                    <p class="add_blog_left_paragraph">记心中所想</p>
+                </div>
+                <div class="add_blog_right">
+                    <p class="layui-icon layui-icon-edit"></p>
+                </div>
+                <div class="add_blog_bottom">
+                    <a href="/addblog">let’s go</a>&nbsp;<p class="fa fa-arrow-circle-right"></p>
+                </div>
+            </a>
+        </div>
+        <div class="article_sum">
+            <a href="/blogmanage">
+                <div class="article_sum_left">
+                    <p class="article_sum_left_title article_num"></p>
+                    <p class="article_sum_left_paragraph">总文章数</p>
+                </div>
+                <div class="article_sum_right">
+                    <p class="fa fa-list-alt"></p>
+                </div>
+                <div class="article_sum_bottom">
+                    <a href="/blogmanage">More info</a>&nbsp;<p class="fa fa-arrow-circle-right"></p>
+                </div>
+            </a>
+        </div>
+        <div class="get_comment">
+            <a href="/comment">
+                <div class="get_comment_left">
+                    <p class="get_comment_left_title get_num"></p>
+                    <p class="get_comment_left_paragraph">收到评论数</p>
+                </div>
+                <div class="get_comment_right">
+                    <p class="layui-icon layui-icon-reply-fill"></p>
+                </div>
+                <div class="get_comment_bottom">
+                    <a href="/comment">More info</a>&nbsp;<p class="fa fa-arrow-circle-right"></p>
+                </div>
+            </a>
+        </div>
+        <div class="classify_count">
+            <a href="/category">
+                <div class="classify_count_left">
+                    <p class="classify_count_left_title classify_num"></p>
+                    <p class="classify_count_left_paragraph">分类数量</p>
+                </div>
+                <div class="classify_count_right">
+                    <p class="fa fa-th-large"></p>
+                </div>
+                <div class="classify_count_bottom">
+                    <a href="/category">More info</a>&nbsp;<p class="fa fa-arrow-circle-right"></p>
+                </div>
+            </a>
+        </div>
+        <div class="label_sum">
+            <a href="/tag">
+                <div class="label_sum_left">
+                    <p class="label_sum_left_title label_num"></p>
+                    <p class="label_sum_left_paragraph">标签总量</p>
+                </div>
+                <div class="label_sum_right">
+                    <p class="fa fa-tags"></p>
+                </div>
+                <div class="label_sum_bottom">
+                    <a href="/tag">More info</a>&nbsp;<p class="fa fa-arrow-circle-right"></p>
+                </div>
+            </a>
+        </div>
+        <div class="link">
+            <a href="/link">
+                <div class="link_left">
+                    <p class="link_left_title link_num"></p>
+                    <p class="link_left_paragraph">友情链接</p>
+                </div>
+                <div class="link_right">
+                    <p class="layui-icon layui-icon-heart-fill"></p>
+                </div>
+                <div class="link_bottom">
+                    <a href="/link">More info</a>&nbsp;<p class="fa fa-arrow-circle-right"></p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="home_page">
+        <p>统计图</p>
+    </div>
+    <div class="horizontal_line">
+        <hr width="100%">
+    </div>
+    <div class="statement">
+        <div id="main1" style="width: 521px;height: 400px;display: inline-block;margin: 0 20px;margin-right:10px;"></div>
+        <div id="main2" style="width: 521px;height: 400px;display: inline-block;margin: 0 20px;margin-right:10px;"></div>
+        <div id="main3" style="width: 521px;height: 400px;display: inline-block;margin: 0 20px;"></div>
+    </div>
+</div>
+<script th:src="@{js/jquery.min.js}"></script>
+<script th:src="@{js/echarts.min.js}"></script>
+<!-- 渲染文章 -->
+<script>
+    $.ajax({
+        url: "txt/findAll",
+        success: function (req) {
+            console.log("查询出博客文章：");
+            console.log(req.data)
+            console.log(req.data.list)
+            var name = [];
+            var blogViews = [];
+            for(var i = 0;i<req.data.list.length;i++){
+                name.push(req.data.list[i].blog_title);
+                blogViews.push(req.data.list[i].blog_views);
+            }
+            // 基于准备好的dom，初始化echarts实例
+            var myChart1 = echarts.init(document.getElementById('main1'));
+            // 指定图表的配置项和数据
+            console.log(name);
+            console.log(blogViews);
+            var option = {
+                title: {
+                    text: '文章访问量'
+                },
+                tooltip: {},
+                legend: {
+                    data:['访问量']
+                },
+                xAxis: {
+                    data:name,
+                    axisLabel: {
+                        interval:0,
+                        rotate:40
+                    }
+                },
+                yAxis: {},
+                series: [{
+                    name: '访问量',
+                    type: 'bar',
+                    data:blogViews
+                }]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart1.setOption(option);
+        }
+    })
+
+    $.ajax({
+        url: "blog/getViewNum",
+        success: function (req) {
+            console.log("查询出访问量：");
+            console.log(req)
+            var date = [];
+            var view = [];
+            for(var i = 0;i<req.length;i++){
+                date.push(req[i].name);
+                view.push(req[i].value);
+            }
+            date.reverse();
+            view.reverse();
+            console.log(date);
+            console.log(view);
+            var myChart2 = echarts.init(document.getElementById('main2'));
+            var option2 = {
+                title: {
+                    text: '一个月的访问量'
+                },
+                tooltip: {},
+                legend: {
+                    data:['访问量']
+                },
+                xAxis: {
+                    data:date,
+                    axisLabel: {
+                        interval: 0,//横轴信息全部显示
+                        rotate: 40
+                    }
+                },
+                yAxis: {},
+                series: [{
+                    name: '访问量',
+                    type: 'line',
+                    data:view
+                }]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart2.setOption(option2);
+        }
+    })
+
+    $.ajax({
+        url: "blog/categoryNum",
+        success: function (req) {
+            console.log("查询出分类：");
+            console.log(req)
+            var myChart3 = echarts.init(document.getElementById('main3'));
+            var option3 = {
+                title: {
+                    text: '博客分类的博客数'
+                },
+                tooltip: {},
+                series: [{
+                    name: '博客分类的博客数',
+                    type: 'pie',
+                    radius: '55%',  // 饼图的半径，外半径为可视区尺寸（容器高宽中较小一项）的 55% 长度。
+                    data:req
+                }]
+            };
+            myChart3.setOption(option3);
+        }
+    })
+</script>
+<!-- 获取总数 -->
+<script>
+    $.ajax({
+        url: "blog/num",
+        type: "POST",
+        data: {},
+        success: function (data) {
+            $(".article_num").text(data.tb_blog);
+            $(".get_num").text(data.tb_blog_comment);
+            $(".classify_num").text(data.tb_blog_category);
+            $(".label_num").text(data.tb_blog_tag);
+            $(".link_num").text(data.tb_link);
+        },
+        dataType: "json"
+    });
+</script>
+<!-- 定时删除 -->
+<script>
+    $(document).ready(function() {
+        //循环执行，每隔1秒钟执行一次 1000
+        var t1 = window.setInterval(refreshCount, 100);
+        function refreshCount() {
+            var myDate = new Date();
+            var num= 0;
+            if(num == 0){
+                if(myDate.getHours() == 23){
+                    $.ajax({
+                        url: "blog/deleteView",
+                        success: function (data) {
+                           if(data>0){
+                               console.log("成功")
+                           }else{
+                               console.log("失败")
+                           }
+                        },
+                    });
+                }
+                num++;
+            }
+        }
+    })
+</script>
+</body>
+</html>

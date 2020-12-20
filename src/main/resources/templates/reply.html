@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}" media="all">
+</head>
+<body style="padding: 20px;">
+<div class="layui-form">
+    <input type="hidden"  name="comment_id" id="comment_id" />
+    <div class="layui-form-item layui-form-text">
+        <h2>回复内容:</h2>
+        <div>
+            <textarea placeholder="请输入内容" class="layui-textarea" id="reply-text" name="reply_body"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <button style="float: right;" class="layui-btn" id="reply-btn" lay-submit lay-filter="sub">回复</button>
+    </div>
+</div>
+<script th:src="@{layui/layui.js}"></script>
+<script th:src="@{js/util.js}"></script>
+<script>
+    layui.use(['form', 'jquery','util'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        var util = layui.util;
+        //获取路径上的参数
+        var data = getQueryString();
+        console.log(data);
+        //根据id查询出要编辑的数据
+        $.ajax({
+            url: "blog/comfindById",
+            data: data,
+            success: function (req) {
+                console.log(req);
+                $("#comment_id").val(req.data.comment_id);
+            }
+        });
+
+        $("#reply-btn").click(function(){
+            if($("#reply-text").val() != null && $("#reply-text").val() != "") {
+                $.ajax({
+                    url: "blog/rep",
+                    data: {
+                        "comment_id": $("#comment_id").val()
+                        , "reply_body": util.escape($("#reply-text").val())
+                    },
+                    success: function (req) {
+                        if (req > 0) {
+                            layer.alert("回复成功！", function (index) {
+                                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                parent.layer.close(index);
+                                parent.layui.table.reload('testReload');
+                            });
+                        } else {
+                            layer.alert("回复失败！");
+                        }
+                    }
+                });
+            }else{
+                layer.msg("请输入要回复的文字");
+            }
+        })
+    });
+</script>
+</body>
+</html>

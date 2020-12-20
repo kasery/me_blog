@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title id="html_title"></title>
+    <link th:href="@{css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{css/ll-css.css}" rel="stylesheet">
+    <link th:href="@{css/font-awesome.min.css}" rel="stylesheet">
+    <link th:href="@{css/railscasts.css}" rel="stylesheet">
+    <link th:href="@{css/WzStyle.css}" rel="stylesheet">
+    <link th:href="@{css/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css2/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css3/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css4/iconfont.css}" rel="stylesheet">
+    <link th:href="@{css5/iconfont.css}" rel="stylesheet"/>
+    <link th:href="@{css/base.css}" rel="stylesheet"/>
+    <link th:href="@{layui/css/layui.css}" rel="stylesheet">
+    <link th:href="@{/editor/css/editormd.preview.css}" rel="stylesheet"/>
+    <link rel="icon" href="img/head.jpg" type="image/x-icon">
+    <style>
+        .show {
+            display: block;
+            border-top: 1px solid #dcdada;
+            margin-top: 10px;
+        }
+        .hide{
+            display: none;
+        }
+        .comment-body{
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="index :: nav"></div>
+<div id="tb">
+    <div class="ll-header  container-fluid" id="im" style="padding: 5rem 0;">
+        <div class="ll-logo">
+            <a href="/index">
+                <h1 id="blog_title"></h1>
+                <p>人们说“有朝一日”的时候，其实意思就是“永不”。</p>
+                <div class="blog_span_box">
+                    <span class="blog_span" id="create_time"></span>
+                    <span class="blog_span" id="comment">0条评论</span>
+                    <span class="blog_span" id="blog_views"></span>
+                </div>
+                <div id="blog_tag">
+
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="container ll-cantainer"
+         style="background-color: rgba(255, 255, 255, 0.9); border-bottom: 1px solid #eee;margin-bottom: 50px;">
+        <div class="ll-artical-content">
+            <div class="ll-artical bk-wz" id="doc-content">
+			<textarea style="display:none;" placeholder="markdown" id="blog_content">
+
+			</textarea>
+            </div>
+        </div>
+        <p style="margin-top: 8px;text-align: center;font-size: 12px;color: #9199a1;line-height: 18px;display: inline-block;">
+            本站文章除注明转载/出处外,皆为作者原创,欢迎转载.但未经作者同意必须保留此段声明,且在文章页面明显位置给出原文链接,否则保留追究法律责任的权利。
+        </p>
+    </div>
+    <!-- 博客显示评论块 -->
+    <div class="container ll-cantainer" id="blog_show_comment" style="background-color: rgba(255, 255, 255, 0.9);margin-bottom: 50px;">
+        <div class="ll-artical-content">
+            <div class="ll-artical bk-pl">
+                <div class="blog_comment">
+                    <ul id="comments" style="list-style-type: none">
+                    </ul>
+                    <div id="commentPage"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 博客提交评论 -->
+    <div class="container ll-cantainer" id="blog_add_comment" style="background-color: rgba(255, 255, 255, 0.9);border-top: 2px solid #eee">
+        <div class="ll-artical-content">
+            <div class="ll-artical bk-tjpl">
+                <h3 style="text-align: center;font-weight: normal;margin-bottom: 40px;font-size: 1.25em;">添加评论</h3>
+                <table id="commentForm" class="form layui-form">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <input type="hidden" name="blog_id" id="blog_id"/>
+                            <input type="text" lay-verType="tips" required lay-verify="newName|required" name="commentator" id="commentator" placeholder="(*必填)怎么称呼你?">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="email" lay-verType="tips" lay-verify="em|email|required" name="email" id="email" placeholder="(*必填)你的联系邮箱">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" lay-verType="tips" name="websiteUrl" id="websiteUrl" placeholder="你的网站地址(可不填)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input style="width: 50%" type="text" name="verifyCode"
+                                   id="verifyCode" lay-verType="tips" lay-verify="yanzhenma|required" placeholder="(*必填)请输入验证码">&nbsp;&nbsp;
+                            <img th:src="@{/kaptcha}" alt="单击图片刷新！" class="pointer mr-2"
+                                 style="margin-top: 15px;width: 100px;height: 40px;" onclick="refresh_kaptcha()"
+                                 id="kaptcha"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <textarea rows="5" lay-verType="tips" lay-verify="pl|required" name="commentBody" id="commentBody"
+                                      placeholder="(*必填)请输入你的评论"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button id="commentSubmit" type="submit" class="submit am-btn am-btn-primary" lay-submit  lay-filter="pl_submit">提交</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- 博客底部 -->
+    <div class="container-fluid ll-footer">
+        <div class="container">
+            <p class="ll-footer-link">
+                <span id="footerAbout">&copy; </span>
+                <span> Powered by </span>
+                <span id="footerCopyRight"></span>
+            </p>
+            <p class="ll-footer-link">
+                <span id="footerICP"></span>
+                <span>❤Theme Amaze by spiritree & jiahao.Zhang</span>
+            </p>
+        </div>
+    </div>
+</div>
+<!-- 进度条 -->
+<div class="progressbar">
+    <div class="progressbar-b"></div>
+</div>
+<script th:src="@{js/ribbon.js}"></script>
+<script th:src="@{js/jquery.min.js}"></script>
+<script th:src="@{js/bootstrap.min.js}"></script>
+<script th:src="@{js/TweenMax.min.js}"></script>
+<script th:src="@{js/jquery.js}"></script>
+<script th:src="@{layui/layui.js}"></script>
+<script th:src="@{js/jsrender.min.js}"></script>
+<script th:src="@{js/highlight.pack.js}"></script>
+<script th:src="@{js/util.js}"></script>
+<script th:src="@{editor/examples/js/jquery.min.js}"></script>
+<script th:src="@{editor/lib/marked.min.js}"></script>
+<script th:src="@{editor/lib/prettify.min.js}"></script>
+<script th:src="@{editor/lib/raphael.min.js}"></script>
+<script th:src="@{editor/lib/underscore.min.js}"></script>
+<script th:src="@{editor/lib/sequence-diagram.min.js}"></script>
+<script th:src="@{editor/lib/flowchart.min.js}"></script>
+<script th:src="@{editor/lib/jquery.flowchart.min.js}"></script>
+<script th:src="@{editor/editormd.js}"></script>
+<script>
+    function refresh_kaptcha() {
+        $("#kaptcha").attr("src", "/kaptcha?" + Math.random());
+    }
+
+    var data = getQueryString();
+    console.log(data);
+    $("#blog_id").val(data.blog_id);
+    var yourName;
+    var yourAvatar;
+    //查询出网站名称,配置
+    $.ajax({
+        url: "blog/config",
+        success: function (req) {
+            console.log("配置" + req.data);
+            for (var i = 0; i < req.data.length; i++) {
+                $("#" + req.data[i].config_name).append(req.data[i].config_value);
+                if(req.data[i].config_name == "yourName"){
+                    yourName = req.data[i].config_value;
+                }
+                if(req.data[i].config_name == "yourAvatar"){
+                    yourAvatar = req.data[i].config_value;
+                }
+            }
+        },
+    });
+
+    //根据id查询出要编辑的数据
+    $.ajax({
+        url: "blog/findById",
+        data: data,
+        success: function (req) {
+            console.log(req);
+            $("#html_title").append(req.data.blog_title);
+            $("#blog_title").append(req.data.blog_title);
+            $("#create_time").append(req.data.create_time.split(' ')[0]);
+            $("#blog_views").append(req.data.blog_views + " 浏览");
+            var arr = [];
+            var str = req.data.blog_tags;
+            arr = str.split(",");
+            for (var i = 0; i < arr.length; i++) {
+                $("#blog_tag").append("<span>" + arr[i] + "</span>");
+            }
+            if(req.data.enable_comment == 0){
+                $("#blog_add_comment").show();
+            }else{
+                $("#blog_add_comment").hide();
+            }
+            $("#blog_content").text(req.data.blog_content);
+            //要数据添加在textarea后，才能渲染出页面样子
+            var testEditor;
+            $(function () {
+                testEditor = editormd.markdownToHTML("doc-content", {//注意：这里是上面DIV的id
+                    htmlDecode: "style,script,iframe",
+                    emoji: true,
+                    taskList: true,
+                    tocm: true,
+                    tex: true, // 默认不解析
+                    flowChart: true, // 默认不解析
+                    sequenceDiagram: true, // 默认不解析
+                    codeFold: true
+                });
+            });
+            var blogViews = req.data.blog_views
+            blogViews++
+            $.ajax({
+                url: "txt/update_blog_views",
+                data: {
+                    "blog_id": data.blog_id,
+                    "blog_views":blogViews
+                },
+                success: function (req) {
+                    if(req>0){
+                        console.log("成功");
+                    }else{
+                        console.log("失败");
+                    }
+                },
+            });
+
+        }
+    });
+    layui.use(['element', 'layer', 'form','util'], function () {
+        var element = layui.element;
+        var layer = layui.layer;
+        var form=layui.form;
+        var util = layui.util;
+        form.verify({
+            newName: [/\S/,'称呼不能为空' ] ,
+            em: [/\S/,'邮箱不能为空' ],
+            yanzhenma: [/\S/,'验证码不能为空' ],
+            pl:[/\S/,'评论不能为空' ]
+        })
+        //评论添加
+        form.on('submit(pl_submit)', function(data){
+            $.ajax({
+                url: "txt/add_comment",
+                data: {
+                    "blog_id":util.escape($("#blog_id").val()),
+                    "commentator":util.escape($("#commentator").val()),
+                    "email":util.escape($("#email").val()),
+                    "website_url":util.escape($("#website_url").val()),
+                    "comment_body":util.escape($("#commentBody").val()),
+                    "verifyCode":util.escape($("#verifyCode").val())
+                },
+                success: function (req) {
+                    console.log(req);
+                    if(req>0){
+                        layer.msg("评论发布成功,等待审核通过");
+                    }else if(req == -1){
+                        layer.alert("验证码错误",function(index){
+                            $("#kaptcha").attr("src", "/kaptcha?" + Math.random());
+                            layer.close(index);
+                        });
+                    }else {
+                        layer.alert("评论添加失败")
+                    }
+                },
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        //查询出评论
+        $.ajax({
+            url: "txt/comfindById",
+            data: data,
+            success: function (req) {
+                console.log("评论")
+                console.log(req)
+                if (req.data.size > 0) {
+                    $("#comment").html(req.data.size + "条评论");
+                    $("#blog_show_comment").show();
+                }else{
+                    $("#blog_show_comment").hide();
+                }
+                layui.use('laypage', function () {
+                    var laypage = layui.laypage;
+                    //执行一个laypage实例
+                    console.log("分页的总数：" + req.data.size);
+                    laypage.render({
+                        elem: 'commentPage' //注意，这里的 commentPage 是 ID，不用加 # 号
+                        , count: req.data.size //数据总数，从服务端得到
+                        , limit: 5 //显示条数
+                        , jump: function (obj, first) {
+                            //obj包含了当前分页的所有参数，比如：
+                            console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                            console.log(obj.limit); //得到每页显示的条数
+                            $.ajax({
+                                url: "txt/comfindById",
+                                data: {
+                                    "blog_id":data.blog_id,
+                                    "page": obj.curr,
+                                    "limit": obj.limit
+                                },
+                                success: function (req) {
+                                    console.log("分页查询出来的值")
+                                    console.log(req.data);
+                                    $("#comments").html("");
+                                    for (var i = 0; i < req.data.list.length; i++) {
+                                        $("#comments").append("<li style='display: flex;flex-direction: row;margin-bottom: 20px;'>" +
+                                            "<div class='comment-image'>" +
+                                            "<img src='/img/head.jpg' />" +
+                                            "</div>" +
+                                            "<div class='comment-content'>" +
+                                            "<p>" + req.data.list[i].commentator + "</p>" +
+                                            "<p>评论时间: " + req.data.list[i].comment_create_time + "</p>" +
+                                            "<div class='comment-body'>" + req.data.list[i].comment_body +
+                                            "<div class='comment-reply'>" +
+                                            "<p>" +
+                                            "<div style='font-size: 14px;margin-top:5px;margin-bottom: 10px;'>回复：</div>"+
+                                            "<span><img src = '"+yourAvatar+"' title='博主头像' style='width:50px;height:50px;border:1px solid #eee;border-radius: 50%;margin-right: 10px;overflow: hidden;'</span>"+
+                                            "<span>"+yourName+"：</span>" +
+                                            "<span>" + req.data.list[i].reply_body + "</span>" +
+                                            "<span class='reply-time'>回复时间：" + req.data.list[i].reply_create_time + "</span>" +
+                                            "</p>" +
+                                            "</div>" +
+                                            "</div>" +
+                                            "</div>" +
+                                            "</li>"
+                                        );
+                                        if (req.data.list[i].reply_body != null && req.data.list[i].reply_body != "") {
+                                            $(".comment-reply").attr("class","show");
+                                        } else {
+                                            $(".comment-reply").attr("class","hide");
+                                        }
+                                    }
+                                },
+                            });
+                        }
+                    });
+                });
+            },
+        });
+    });
+
+</script>
+
+<script>
+    //在页面上点击时冒出爱心
+    $(function () {
+        var icon = ['你点击了一下', '❤', '❉', '♋', '☯', '赞'];
+        var colorarr = ['green', 'red', 'blue', 'yellow'];
+        $('#tb').click(function (e) {
+            var index = Math.round(Math.random() * icon.length);
+            var index2 = Math.round(Math.random() * colorarr.length);
+            var $i = $('<b></b>').text(icon[index]);//双数显示这个
+            var x = e.pageX, y = e.pageY;//获取鼠标点击的位置坐标
+            $i.css({
+                "z-index": 9999,
+                "top": y - 20,
+                "left": x,
+                "position": "absolute",
+                "color": colorarr[index2],
+                "font-size": 14,
+            });
+            $("body").append($i);
+            $i.animate({
+                "top": y - 180,
+                "opacity": 0
+            }, 1500, function () {
+                $i.remove();
+            });//设置动画
+        });
+    });
+
+    //定时器用来每次来改变选中的标签里面的内容即可
+    function time() {
+        var date = new Date();//创建一个日期对象
+        var xs = date.getHours();
+        var fz = date.getMinutes();
+        var miao = date.getSeconds()
+        setTimeout(time, 1000);//递归函数
+    }
+
+    time();//调用函数
+    //滚动了滚动条使进度条加载
+    $(window).bind('scroll', function () {
+        var soun = document.documentElement.scrollTop + document.body.scrollTop;
+        if (soun > 0) {
+            $(".progressbar-b").animate({"width": soun + 1390}, 100)
+        } else {
+            $(".progressbar-b").animate({"width": soun}, 100)
+        }
+    })
+</script>
+</body>
+</html>

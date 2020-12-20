@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发布文章</title>
+    <link rel="stylesheet" th:href="@{css/index.css}">
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{font-awesome-4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{css/index2.css}">
+    <!--Editor.md-->
+    <link rel="stylesheet" th:href="@{editor/css/editormd.css}"/>
+    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon"/>
+    <style>
+        .container_box_bottom button{
+            cursor:pointer;
+        }
+        .nav_head_li:nth-child(2){
+            background: #007BFF;
+        }
+        .nav_head_li:nth-child(2):hover {
+            background: #007BFF;
+        }
+        .layui-upload-img {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body style="overflow-x:hidden">
+<div th:replace="BackStage :: sidebar"></div>
+<div th:replace="BackStage :: navbar"></div>
+<div class="container">
+    <div class="container_box">
+        <div class="container_box_title">
+            <h2>发布文章</h2>
+        </div>
+        <div class="container_box_input">
+            <input type="text" placeholder="*请输入文章标题（必填）" name="blog_title" class="blog_title">
+            <input type="text" placeholder="请自定义路径，如springboot:mybatis,默认为id" name="blog_sub_url" class="blog_sub_url">
+            <!-- 博客分类 -->
+            <select class="blog_category_id_name">
+
+            </select>
+            <button type="button" class="layui-btn" id="blog_up">
+                <i class="layui-icon">&#xe67c;</i>上传图片
+            </button>
+            <img class="layui-upload-img" id="blog_head">
+            <hr/>
+            <h2>文章标签</h2>
+            <!-- 博客标签 -->
+            <div class="container_box_checked">
+
+            </div>
+        </div>
+        <div id="article-content">
+            <textarea name="content" id="content" style="display:none;"> </textarea>
+        </div>
+        <div class="container_box_bottom">
+            <button class="add_btn" id="add_btn">保存文章</button>
+            <button class="return_list">返回文章列表</button>
+        </div>
+    </div>
+</div>
+<script th:src="@{layui/layui.js}"></script>
+<!--editormd-->
+<script th:src="@{editor/examples/js/jquery.min.js}"></script>
+<script th:src="@{editor/editormd.js}"></script>
+<script>
+    //分类查询
+    $.ajax({
+        url:"blog/classify",
+        type:"post",
+
+        success:function(res){
+            var category = $(".blog_category_id_name");
+            for(var i = 0;i < res.data.length;i++){
+                category.append("<option value="+res.data[i].category_id+","+res.data[i].category_name+">"+res.data[i].category_name+"</option>");
+            }
+        }
+    });
+
+    //标签查询
+    $.ajax({
+        url:"blog/lable",
+        type:"post",
+
+        success:function(res){
+            var category = $(".container_box_checked");
+            for(var i = 0;i < res.data.length;i++){
+                category.append("<p><input type='checkbox' id='"+res.data[i].tag_id+"' value="+res.data[i].tag_name+" name=tag />"+res.data[i].tag_name+" </p>");
+            }
+        }
+    });
+    $(".return_list").click(function(){
+        window.location.href="/blogmanage"
+    })
+    layui.use(['layer','form','table','upload'], function () {
+        var upload = layui.upload;
+        var num = 0;
+        $("#add_btn").click(function(){
+            if(num > 0){
+
+            }else {
+                layer.msg("必须上传一张博客封面图");
+            }
+        })
+        var uploadInst = upload.render({
+            elem: '#blog_up'
+            , url: 'blog/add_Blog'
+            , auto: false //选择文件后不自动上传
+            , bindAction: '#add_btn' //指向一个按钮触发上传
+            , data:{
+                blog_title:function(){
+                  return  $(".blog_title").val();
+                },
+                blog_sub_url:function(){
+                    return $(".blog_sub_url").val();
+                },
+                blog_category_id_name:function(){
+                    return $(".blog_category_id_name").val();
+                },
+                blog_tags:function(){
+                    var checkeds = [];
+                    $("input[name='tag']:checked").each(function () {
+                        checkeds.push($(this).val());
+                    });
+                    return checkeds;
+                },
+                blog_content:function(){
+                    return $("#content").val();
+                }
+            }
+            , before: function (obj) {
+                obj.preview(function (index, file, result) {
+                    $('#blog_head').attr('src', result);
+                });
+                num++;
+            }
+            , done: function (res) {
+                console.log(res);
+                if(res.code > 0){
+                    return layer.msg(res.msg);
+                }else if(res.code == 0){
+                    if(res.data > 0){
+                        return layer.alert(res.msg,function(){
+                            window.location.reload();
+                        })
+                    }
+                }
+            }
+            , error: function () {
+                layer.alert("上传失败,请重新上传");
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    var testEditor;
+
+    //window.onload = function(){ }
+    $(function () {
+        testEditor = editormd("article-content", {
+            width: "95%",
+            height: 600,
+            syncScrolling: "single",
+            path: "editor/lib/",
+            saveHTMLToTextarea: true,    // 保存 HTML 到 Textarea
+            emoji: true,
+            theme: "dark",//工具栏主题
+            previewTheme: "dark",//预览主题
+            editorTheme: "pastel-on-dark",//编辑主题
+            tex: true,                   // 开启科学公式TeX语言支持，默认关闭
+            flowChart: true,             // 开启流程图支持，默认关闭
+            sequenceDiagram: true,       // 开启时序/序列图支持，默认关闭,
+            //图片上传
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL: "/article/file/upload",
+            onload: function () {
+                console.log('onload', this);
+            },
+            /*指定需要显示的功能按钮*/
+            toolbarIcons: function () {
+                return ["undo", "redo", "|",
+                    "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
+                    "h1", "h2", "h3", "h4", "h5", "h6", "|",
+                    "list-ul", "list-ol", "hr", "|",
+                    "link", "reference-link", "image", "code", "preformatted-text",
+                    "code-block", "table", "datetime", "emoji", "html-entities", "pagebreak", "|",
+                    "goto-line", "watch", "preview", "fullscreen", "clear", "search", "|",
+                    "help", "info", "releaseIcon", "index"]
+            },
+        });
+    });
+</script>
+</body>
+</html>

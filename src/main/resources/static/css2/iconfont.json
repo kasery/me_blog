@@ -1,0 +1,16 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "6536737",
+      "name": "叉号",
+      "font_class": "chahao",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    }
+  ]
+}

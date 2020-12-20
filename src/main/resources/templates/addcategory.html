@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加页面</title>
+    <style>
+        .category_box {
+            padding: 20px;
+        }
+        .category_box_item {
+            margin-bottom: 20px;
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}">
+</head>
+<body>
+    <div class="category_box">
+        <div class="category_box_item">
+            <label for="category_name">分类名称：</label>
+            <input type="text" id="category_name" name="category_name" class="category_name" style="width: 300px;height:30px;">
+        </div>
+        <div class="category_box_item">
+            <label for="category_icon">分类图标：</label>
+            <img id="category_icon" class="category_icon" style="width: 130px;height: 130px;"/>
+        </div>
+        <div class="category_box_item">
+          <button class="layui-btn" id="add_btn">添加</button>
+        </div>
+    </div>
+    <script th:src="@{js/jquery.min.js}"></script>
+    <script th:src="@{layui/layui.js}"></script>
+    <script>
+        layui.use(['form', 'jquery','upload'], function () {
+            var form = layui.form;
+            var $ = layui.jquery;
+            var upload = layui.upload;
+            var num = 0;
+            $("#add_btn").click(function () {
+                if (num > 0) {
+
+                } else {
+                    layer.msg("必须上传一张分类图片");
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#category_icon'
+                , url: 'blog/addcat'
+                , auto: false //选择文件后不自动上传
+                , bindAction: '#add_btn' //指向一个按钮触发上传
+                , data:{
+                    category_name:function(){
+                        return  $(".category_name").val();
+                    }
+                }
+                , before: function (obj) {
+                    obj.preview(function (index, file, result) {
+                        $('#blog_head').attr('src', result);
+                    });
+                    num++;
+                }
+                , done: function (res) {
+                    console.log(res);
+                    if(res.code > 0){
+                        return layer.msg(res.msg);
+                    }else if(res.code == 0){
+                        if(res.data > 0){
+                            return layer.alert(res.msg,function(){
+                                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                parent.layer.close(index);
+                                parent.layui.table.reload('testReload');
+                            })
+                        }
+                    }
+                }
+                , error: function () {
+                    layer.alert("上传失败,请重新上传");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

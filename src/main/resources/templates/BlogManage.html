@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>博客管理</title>
+    <link rel="stylesheet" th:href="@{css/index.css}">
+    <link rel="stylesheet" th:href="@{font-awesome-4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{css/index2.css}">
+    <link rel="stylesheet" th:href="@{css/index3.css}">
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}">
+    <link th:href="@{css5/iconfont.css}" rel="stylesheet"/>
+    <style type="text/css">
+        .layui-table-cell {
+            height: auto !important;
+            white-space: normal;
+        }
+
+        .nav_li:nth-child(1) {
+            background: #007BFF;
+        }
+        .nav_li:nth-child(1):hover {
+            background: #007BFF;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="BackStage :: sidebar"></div>
+<div th:replace="BackStage :: navbar"></div>
+<div class="container">
+    <div class="container_box">
+        <div class="container_box_title">
+            <h2>博客管理</h2>
+        </div>
+        <div class="container_box_input">
+            <button class="layui-btn" id="layui-btn-blogadd">新增</button>
+            <input type="text" name="sousuo" id="title_cat" class="blog_sousuo" placeholder="关键字(分类/标题)"
+                   style="margin-right: 0px;margin-bottom: 0px;">
+            <button class="layui-btn" id="layui-btn-sousuo" data-type="reload"><i class="iconfont icon-sousuo"></i>搜索
+            </button>
+        </div>
+        <div class="container_box_table">
+            <table class="layui-hide" id="test" lay-filter="test-filter"></table>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script th:src="@{layui/layui.js}"></script>
+<script th:src="@{js/jquery.min.js}"></script>
+<script th:src="@{js/util.js}"></script>
+<script>
+    $("#layui-btn-blogadd").click(function () {
+        window.location.href = "/addblog"
+    })
+</script>
+<script>
+    layui.use(['layer', 'form', 'table', 'jquery'], function () {
+        var table = layui.table;
+        var $ = layui.jquery;
+        table.render({
+            elem: '#test'
+            , url: 'blog/findAll'
+            , id: 'testReload'
+            , cols: [ [
+                {field: 'blog_title', width: 250, title: '标题', sort: true}
+                , {
+                    field: 'blog_cover_image', width: 170, title: '预览图', templet: function (d) {
+                        return '<img src=' + d.blog_cover_image + ' />'
+                    }
+                }
+                , {field: 'blog_views', width: 170, title: '浏览量', sort: true}
+                , {
+                    field: 'blog_status', align: 'center', width: 170, title: '状态', templet: function (d) {
+                        return d.blog_status == 1 ? '<div class=status_1 style="width:50px; background: green;color: #fff;text-align: center">发布</div>' : '<div class=status_0 style="width: 50px;background: #6c757d;color:#fff;text-align: center;">草稿</div>'
+                    }
+                }
+                , {field: 'blog_category_name', title: '博客分类', Width: 70}
+                , {field: 'create_time', width: 200, title: '添加时间', sort: true}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 170}
+            ] ]
+            , page: true
+            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                res.status = 0;
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.data.msg, //解析提示文本
+                    "count": res.data.total, //解析数据长度
+                    "data": res.data.list //解析数据列表
+                };
+            }
+        });
+        //监听行工具事件
+        table.on('tool(test-filter)', function (obj) {
+            var data = obj.data;
+            console.log(data);
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    layer.close(index);
+                    //删除本行数据
+                    $.ajax({
+                        url: "blog/delete",
+                        data: {blog_id: data.blog_id},
+                        success: function (req) {
+                            if (req > 0) {
+                                layer.alert("删除成功！", function (index) {
+                                    parent.layer.close(index);
+                                    table.reload('testReload');
+                                });
+                            } else {
+                                layer.alert("删除失败！");
+                            }
+                        }
+                    });
+                });
+            } else if (obj.event === 'edit') {
+                //iframe层-父子操作
+                layer.open({
+                    type: 2,
+                    area: ['1290px', '650px'],
+                    fixed: false, //不固定
+                    maxmin: true,
+                    offset: 'auto', //垂直水平居中
+                    content: '/edit?blog_id=' + data.blog_id
+                });
+            }
+        });
+
+        var active = {
+            reload: function () {
+                //执行重载
+                table.reload('testReload', {
+                    page: {
+                        curr: 1
+                        //重新从第 1 页开始
+                    },
+                    where: {
+                        "blog_title": $("#title_cat").val()
+                    }
+                }, 'data');
+            }
+        };
+
+        $('#layui-btn-sousuo').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+</body>
+</html>

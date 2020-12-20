@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.huangyong.dao.BackStageMapper">
+
+    <!-- 定时删除浏览量 -->
+    <delete id="deleteView" >
+		delete from website_visits where not day_time between date_sub(now(),interval 1 month) and now()
+	</delete>
+
+    <!-- 博客添加浏览量 -->
+    <insert id="addview" parameterType="int">
+		insert into website_visits(day_visits) values(#{num})
+	</insert>
+
+    <!-- 首页查询全部文章 -->
+    <select id="blogfindAll" parameterType="String" resultType="blog">
+        select * from ${table_name}
+        <where>
+            and blog_status = 1
+            <if test="blog_title!=null and blog_title!=''">
+                <bind name="tblog_title" value="'%'+blog_title+'%'"/>
+                and blog_title like #{tblog_title} or blog_category_name like #{tblog_title}
+            </if>
+        </where>
+    </select>
+
+    <!-- 首页查询点击最多的文章 -->
+    <select id="clickFindAll" parameterType="String" resultType="blog">
+        select * from ${table_name}
+        <where>
+            <if test="blog_title!=null and blog_title!=''">
+                <bind name="tblog_title" value="'%'+blog_title+'%'"/>
+                and blog_title like #{tblog_title} or blog_category_name like #{tblog_title}
+            </if>
+            and blog_status = 1
+        </where>
+    </select>
+
+    <!-- 根据标签查询 -->
+    <select id="findAllByTag" parameterType="String" resultType="blog">
+        select * from ${table_name}
+        <where>
+            <if test="blog_tags!=null and blog_tags!=''">
+                <bind name="tblog_tags" value="'%'+blog_tags+'%'"/>
+                and blog_tags like #{tblog_tags}
+            </if>
+            and blog_status = 1
+        </where>
+    </select>
+    <!-- 根据博客id查询评论 -->
+    <select id="comfindByBlog_Id" parameterType="int" resultType="comment">
+		select * from tb_blog_comment where blog_id=#{blog_id} and comment_status = 1
+	</select>
+
+    <!-- 博客添加评论 -->
+    <insert id="add_comment" parameterType="comment">
+		insert into tb_blog_comment(blog_id,commentator,email,website_url,comment_body)
+		values(#{blog_id},#{commentator},#{email},#{website_url},#{comment_body})
+	</insert>
+
+    <!-- 仪盘表对应的表查询全部数据条数 -->
+    <select id="findCount" parameterType="String" resultType="int">
+        select count(*) from ${table_name}
+	</select>
+    <!-- 博客分类统计图 -->
+    <select id="blogCategroyOfArticleCount"  resultType="map">
+        select category_name name,count(*) value from tb_blog_category a,tb_blog b where a.category_id = b.blog_category_id group by category_name;
+	</select>
+    <!-- 博客一个月访问量统计图 -->
+    <select id="getViewNum"  resultType="map">
+        select DATE_FORMAT(day_time,"%Y-%m-%d") name,count(*) value from website_visits where day_time between date_sub(now(),interval 1 month) and now() group by name order by name desc
+    </select>
+    <!-- 查询全部文章 -->
+    <select id="findAll" parameterType="String" resultType="blog">
+        select * from ${table_name}
+        <where>
+            <if test="blog_title!=null and blog_title!=''">
+                <bind name="tblog_title" value="'%'+blog_title+'%'"/>
+                and blog_title like #{tblog_title} or blog_category_name like #{tblog_title}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询全部分类 -->
+    <select id="comFindAll" parameterType="String" resultType="Comment">
+		select * from ${table_name}
+	</select>
+
+    <!-- 查询全部分类 -->
+    <select id="catFindAll" parameterType="String" resultType="Category">
+		select * from ${table_name}
+	</select>
+
+    <!-- 查询全部标签 -->
+    <select id="tagFindAll" parameterType="String" resultType="Tag">
+		select * from ${table_name}
+        <where>
+            <if test="tag_name!=null and tag_name!=''">
+                <bind name="ttag_name" value="'%'+tag_name+'%'"/>
+                and tag_name like #{ttag_name}
+            </if>
+        </where>
+	</select>
+
+    <!-- 查询全部友情链接 -->
+    <select id="linkFindAll" parameterType="String" resultType="link">
+		select * from ${table_name}
+	</select>
+
+    <!-- 添加页面的分类 -->
+    <select id="classifyAll" resultType="Category">
+		select * from tb_blog_category order by category_id desc
+	</select>
+
+    <!-- 添加页面的标签 -->
+    <select id="lableAll" resultType="Tag">
+		select * from tb_blog_tag
+	</select>
+
+    <!-- 添加博客文章 -->
+    <insert id="add_Blog" parameterType="blog">
+		insert into tb_blog(blog_title,blog_sub_url,blog_category_id,blog_category_name,blog_tags,blog_content,blog_cover_image)
+		values(#{blog_title},#{blog_sub_url},#{blog_category_id},#{blog_category_name},#{blog_tags},#{blog_content},#{blog_cover_image})
+	</insert>
+
+    <!-- 删除博客文章 -->
+    <delete id="delete" parameterType="int">
+		delete from tb_blog where blog_id=#{blog_id}
+	</delete>
+
+    <!-- 根据id查询文章 -->
+    <select id="findById" parameterType="int" resultType="Blog">
+		select * from tb_blog where blog_id=#{blog_id}
+	</select>
+
+    <!-- 修改博客文章 -->
+    <update id="edit_Blog" parameterType="blog">
+        update tb_blog set
+        <trim suffixOverrides=",">
+            <if test="blog_title !=null and blog_title !=''">
+                blog_title=#{blog_title},
+            </if>
+            <if test="blog_status !=null">
+                blog_status=#{blog_status},
+            </if>
+            <if test="blog_category_id != null and blog_category_id != ''">
+                blog_category_id=#{blog_category_id},
+            </if>
+            <if test="blog_category_name !=null and blog_category_name !=''">
+                blog_category_name=#{blog_category_name},
+            </if>
+            <if test="blog_tags !=null and blog_tags !=''">
+                blog_tags=#{blog_tags},
+            </if>
+            <if test="blog_content !=null and blog_content !=''">
+                blog_content=#{blog_content},
+            </if>
+        </trim>
+        where blog_id=#{blog_id}
+    </update>
+
+    <!-- 修改博客浏览量 -->
+    <update id="update_blog_views" parameterType="blog">
+        update tb_blog set
+        <trim suffixOverrides=",">
+            <if test="blog_views !=null and blog_views !=''">
+                blog_views=#{blog_views},
+            </if>
+        </trim>
+        where blog_id=#{blog_id}
+    </update>
+
+	<!-- 删除评论 -->
+	<delete id="comdelete" parameterType="int">
+		delete from tb_blog_comment where comment_id=#{comment_id}
+	</delete>
+
+    <!-- 批量删除评论 -->
+    <delete id="deletes" parameterType="int">
+        delete from tb_blog_comment
+        <where>
+            comment_id in
+            <foreach collection="array" item="comment_id" open="(" separator="," close=")">
+                #{comment_id}
+            </foreach>
+        </where>
+    </delete>
+
+    <!-- 批量修改评论(审核评论) -->
+    <update id="updates" parameterType="int">
+        update tb_blog_comment set comment_status=1
+        <where>
+            comment_id in
+            <foreach collection="array" item="comment_id" open="(" separator="," close=")">
+                #{comment_id}
+            </foreach>
+        </where>
+    </update>
+
+    <!-- 批量删除分类 -->
+    <delete id="catdeletes" parameterType="int">
+        delete from tb_blog_category
+        <where>
+            category_id in
+            <foreach collection="array" item="category_id" open="(" separator="," close=")">
+                #{category_id}
+            </foreach>
+        </where>
+    </delete>
+
+    <!-- 删除分类 -->
+    <delete id="catdelete" parameterType="int">
+		delete from tb_blog_category where category_id=#{category_id}
+	</delete>
+
+    <!-- 添加分类 -->
+    <insert id="addcat" parameterType="category">
+		insert into tb_blog_category(category_name,category_icon,category_rank,is_deleted)
+		values(#{category_name},#{category_icon},#{category_rank},#{is_deleted})
+	</insert>
+
+    <!-- 根据id查询评论 -->
+    <select id="comfindById" parameterType="int" resultType="comment">
+		select * from tb_blog_comment where comment_id=#{comment_id}
+	</select>
+
+    <!--  回复功能 -->
+    <update id="reply" parameterType="comment">
+        update tb_blog_comment set reply_body=#{reply_body} where comment_id=#{comment_id}
+    </update>
+
+    <!-- 根据id查询分类 -->
+    <select id="catfindById" parameterType="int" resultType="category">
+		select * from tb_blog_category where category_id=#{category_id}
+	</select>
+
+    <!-- 分类修改 -->
+    <update id="editcat" parameterType="category">
+        update tb_blog_category set category_name=#{category_name} where category_id=#{category_id}
+    </update>
+
+    <!-- 删除标签 -->
+    <delete id="tagdelete" parameterType="int">
+		delete from tb_blog_tag where tag_id=#{tag_id}
+	</delete>
+
+    <!-- 根据id查询标签 -->
+    <select id="tagfindById" parameterType="int" resultType="tag">
+		select * from tb_blog_tag where tag_id=#{tag_id}
+	</select>
+
+    <!-- 标签修改 -->
+    <update id="tagedit" parameterType="tag">
+        update tb_blog_tag set tag_name=#{tag_name} where tag_id=#{tag_id}
+    </update>
+
+    <!-- 添加标签 -->
+    <insert id="addtag" parameterType="tag">
+		insert into tb_blog_tag(tag_name,is_deleted)
+		values(#{tag_name},#{is_deleted})
+	</insert>
+
+    <!-- 批量删除标签 -->
+    <delete id="tagdeletes" parameterType="int">
+        delete from tb_blog_tag
+        <where>
+            tag_id in
+            <foreach collection="array" item="tag_id" open="(" separator="," close=")">
+                #{tag_id}
+            </foreach>
+        </where>
+    </delete>
+
+    <!-- 删除友情链接 -->
+    <delete id="linkdelete" parameterType="int">
+		delete from tb_link where link_id=#{link_id}
+	</delete>
+
+    <!-- 批量删除标签 -->
+    <delete id="linkdeletes" parameterType="int">
+        delete from tb_link
+        <where>
+            link_id in
+            <foreach collection="array" item="link_id" open="(" separator="," close=")">
+                #{link_id}
+            </foreach>
+        </where>
+    </delete>
+
+    <!-- 添加友情链接 -->
+    <insert id="addlink" parameterType="link">
+		insert into tb_link(link_name,link_url,link_description,link_rank)
+		values(#{link_name},#{link_url},#{link_description},#{link_rank})
+	</insert>
+
+    <!-- 根据id查询友情链接 -->
+    <select id="linkfindById" parameterType="int" resultType="link">
+		select * from tb_link where link_id=#{link_id}
+	</select>
+
+    <!-- 友情链接修改 -->
+    <update id="linkedit" parameterType="link">
+        update tb_link set
+        <trim suffixOverrides=",">
+            <if test="link_type !=null and link_type !=''">
+                link_type=#{link_type},
+            </if>
+            <if test="link_name !=null and link_name !=''">
+                link_name=#{link_name},
+            </if>
+            <if test="link_url != null and link_url != ''">
+                link_url=#{link_url},
+            </if>
+            <if test="link_description !=null and link_description !=''">
+                link_description=#{link_description},
+            </if>
+            <if test="link_rank !=null and link_rank !=''">
+                link_rank=#{link_rank},
+            </if>
+        </trim>
+        where link_id=#{link_id}
+    </update>
+
+    <!-- 配置页面的数据渲染 -->
+    <select id="configFindAll" resultType="Config">
+		select * from tb_config
+	</select>
+
+    <!-- 修改配置页面 -->
+    <update id="configedit" parameterType="Config">
+        update tb_config set
+        <trim suffixOverrides=",">
+            <if test="config_value !=null and config_value !=''">
+                config_value=#{config_value},
+            </if>
+            <if test="update_time !=null and update_time !=''">
+                update_time=#{update_time},
+            </if>
+        </trim>
+        where config_name=#{config_name}
+    </update>
+
+
+    <!-- 根据登录用户查询用户 -->
+    <select id="userfindByuser" parameterType="user" resultType="user">
+		select * from tb_admin_user where login_user_name=#{login_user_name} and login_password=#{login_password}
+	</select>
+
+    <!-- 修改登录账号和名称 -->
+    <update id="useredit" parameterType="user">
+        update tb_admin_user set
+        <trim suffixOverrides=",">
+            <if test="login_user_name !=null and login_user_name !=''">
+                login_user_name=#{login_user_name},
+            </if>
+            <if test="nick_name !=null and nick_name !=''">
+                nick_name=#{nick_name},
+            </if>
+        </trim>
+        where admin_user_id=#{admin_user_id} and
+    </update>
+
+    <!-- 修改登录密码 -->
+    <update id="password_edit" parameterType="String">
+        update tb_admin_user set login_password=#{new_password} where admin_user_id=#{admin_user_id} and login_password=#{login_password}
+    </update>
+
+    <!-- 根据id查询用户 -->
+    <select id="userfindById" parameterType="int" resultType="user">
+		select * from tb_admin_user where admin_user_id=#{admin_user_id}
+	</select>
+
+</mapper>

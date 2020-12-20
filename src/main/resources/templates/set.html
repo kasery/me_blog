@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>系统配置</title>
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{css/index.css}">
+    <link rel="stylesheet" th:href="@{font-awesome-4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{css/index2.css}">
+    <link rel="stylesheet" th:href="@{css/index3.css}">
+    <style rel="stylesheet">
+        .clear:after, .clear:before {
+            height: 0;
+            content: ".";
+            display: block;
+            overflow: hidden;
+            clear: both;
+        }
+
+        .input-lable {
+            padding: 9px 0;
+            text-align: left;
+            width: 136px;
+        }
+
+        .input-block {
+            margin-left: 0;
+        }
+
+        .input-block-input {
+            margin-left: 81.5%;
+        }
+
+        .card-header {
+            font-size: 18px;
+        }
+        .layui-card {
+            border-top: 5px solid #00FFFF;
+            border-radius: 5px;
+        }
+        .nav_bottom_li:nth-child(1) {
+            background: #007BFF;
+        }
+        .nav_bottom_li:nth-child(1):hover {
+            background: #007BFF;
+        }
+    </style>
+</head>
+<body class="layui-layout-body" style="background-color: #F2F2F2;">
+<div class="layui-layout layui-layout-admin">
+    <div th:replace="BackStage :: sidebar"></div>
+    <div th:replace="BackStage :: navbar"></div>
+
+    <div class="layui-body" style="margin-left: 40px;">
+        <div style="padding: 20px;">
+            <form class="layui-form" action="">
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md4">
+                        <div class="layui-card" style="height: 476px;">
+                            <div class="layui-card-header card-header">站点信息</div>
+                            <div class="layui-card-body">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">站点名称</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="websiteName" lay-verify="websiteName" autocomplete="off"
+                                               placeholder="站点Name" class="layui-input" id="websiteName">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">站点描述</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="websiteDescription" lay-verify="websiteDescription" autocomplete="off"
+                                               placeholder="描述" class="layui-input" id="websiteDescription">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">站点Logo</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="websiteLogo" lay-verify="websiteLogo" autocomplete="off"
+                                               placeholder="Logo-Url" class="layui-input" id="websiteLogo">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">favicon.ico</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="websiteIcon" lay-verify="websiteIcon" autocomplete="off"
+                                               placeholder="头部图标" class="layui-input" id="websiteIcon">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block input-block-input">
+                                        <button type="submit" class="layui-btn layui-btn-danger" lay-submit
+                                                lay-filter="websbt" id="websbt">确认修改
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-md4">
+                        <div class="layui-card" style="height: 385px;">
+                            <div class="layui-card-header card-header">个人信息</div>
+                            <div class="layui-card-body">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">个人头像</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="yourAvatar" lay-verify="yourAvatar" autocomplete="off"
+                                               placeholder="头像url" class="layui-input" id="yourAvatar">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">个人名称</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="yourName" lay-verify="yourName" autocomplete="off"
+                                               placeholder="个人Name" class="layui-input" id="yourName">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">个人邮箱</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="yourEmail" lay-verify="yourEmail" autocomplete="off"
+                                               placeholder="@qq" class="layui-input" id="yourEmail">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block input-block-input">
+                                        <button type="submit" class="layui-btn layui-btn-danger" lay-submit
+                                                lay-filter="yousbt" id="yousbt">确认修改
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-md4">
+                        <div class="layui-card" style="height: 567px;">
+                            <div class="layui-card-header card-header">底部设置</div>
+                            <div class="layui-card-body">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">底部About</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="footerAbout" lay-verify="footerAbout" autocomplete="off"
+                                               placeholder="底部关于信息" class="layui-input" id="footerAbout">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">底部备案号</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="footerICP" lay-verify="footerICP" autocomplete="off"
+                                               placeholder="底部备案号" class="layui-input" id="footerICP">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">底部Copy Right</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="footerCopyRight" lay-verify="footerCopyRight" autocomplete="off"
+                                               placeholder="版权" class="layui-input" id="footerCopyRight">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">底部Powered By</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="footerPoweredBy" lay-verify="footerPoweredBy" autocomplete="off"
+                                               placeholder="技术支持" class="layui-input" id="footerPoweredBy">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label input-lable">底部Powered By URL</label>
+                                    <div class="layui-input-block input-block">
+                                        <input type="text" name="footerPoweredByURL" lay-verify="footerPoweredByURL" autocomplete="off"
+                                               placeholder="技术支持-Url" class="layui-input" id="footerPoweredByURL">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block input-block-input">
+                                        <button type="submit" class="layui-btn layui-btn-danger" lay-submit
+                                                lay-filter="footsbt" id="footsbt">确认修改
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{layui/layui.js}"></script>
+<script th:src="@{js/jquery.min.js}"></script>
+<script>
+    //JavaScript代码区域
+    layui.use(['element', 'layer','form'], function () {
+        var element = layui.element;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        var form = layui.form;
+        window.onload = function () {
+            ajax();
+        }
+
+        form.on('submit(websbt)', function(data){
+            console.log(data.field)
+            $.ajax({
+                url:"blog/set",
+                type:'post',
+                contentType:"application/json",
+                data:
+                    JSON.stringify({ //必须将数据格式转换为json字符串格式(关键)
+                        configList:[ //对象数组,对应实体类
+                            {
+                                config_name:"websiteName",
+                                config_value:$("#websiteName").val()
+                            }
+                            ,{
+                                config_name:"websiteDescription",
+                                config_value:$("#websiteDescription").val()
+                            }
+                            ,{
+                                config_name:"websiteLogo",
+                                config_value:$("#websiteLogo").val()
+                            }
+                            ,{
+                                config_name:"websiteIcon",
+                                config_value:$("#websiteIcon").val()
+                            }
+                        ]
+                    }),
+                success:function(req){
+                    if(req>0){
+                        layer.alert("修改成功！");
+                        ajax();
+                    }else{
+                        layer.alert("修改失败！");
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        form.on('submit(yousbt)', function(data){
+            console.log(data.field)
+            $.ajax({
+                url:"blog/set",
+                type:'post',
+                contentType:"application/json",
+                data:
+                    JSON.stringify({ //必须将数据格式转换为json字符串格式(关键)
+                        configList:[ //对象数组,对应实体类
+                            {
+                                config_name:"yourAvatar",
+                                config_value:$("#yourAvatar").val()
+                            }
+                            ,{
+                                config_name:"yourName",
+                                config_value:$("#yourName").val()
+                            }
+                            ,{
+                                config_name:"yourEmail",
+                                config_value:$("#yourEmail").val()
+                            }
+                        ]
+                    }),
+                success:function(req){
+                    if(req>0){
+                        layer.alert("修改成功！");
+                        ajax();
+                    }else{
+                        layer.alert("修改失败！");
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        form.on('submit(footsbt)', function(data){
+            console.log(data.field)
+            $.ajax({
+                url:"blog/set",
+                type:'post',
+                contentType:"application/json",
+                data:
+                    JSON.stringify({ //必须将数据格式转换为json字符串格式(关键)
+                        configList:[ //对象数组,对应实体类
+                            {
+                                config_name:"footerAbout",
+                                config_value:$("#footerAbout").val()
+                            }
+                            ,{
+                                config_name:"footerICP",
+                                config_value:$("#footerICP").val()
+                            }
+                            ,{
+                                config_name:"footerCopyRight",
+                                config_value:$("#footerCopyRight").val()
+                            }
+                            ,{
+                                config_name:"footerPoweredBy",
+                                config_value:$("#footerPoweredBy").val()
+                            }
+                            ,{
+                                config_name:"footerPoweredByURL",
+                                config_value:$("#footerPoweredByURL").val()
+                            }
+                        ]
+                    }),
+                success:function(req){
+                    if(req>0){
+                        layer.alert("修改成功！");
+                        ajax();
+                    }else{
+                        layer.alert("修改失败！");
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        function ajax(){
+            $.ajax({
+                url: "blog/config",
+                success: function (req) {
+                    console.log(req.data);
+                    for(var i=0;i<req.data.length;i++){
+                        $("#"+req.data[i].config_name).val(req.data[i].config_value);
+                    }
+                }
+            });
+        }
+
+    });
+</script>
+</body>
+</html>

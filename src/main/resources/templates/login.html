@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <style>
+        .tis {
+            position: fixed;
+            top: 50%;
+            left: 45%;
+            background: #fff;
+            z-index: 2;
+            text-align: center;
+            width: 150px;
+            display: none;
+        }
+
+        .tis-sj {
+            position: absolute;
+            top: -15px;
+            left: 48px;
+            width: 50px;
+            height: 40px;
+            background: #fff;
+            z-index: 2;
+            border-radius: 45px 45px 25px 25px;
+        }
+    </style>
+    <link th:href="@{css/loginstyle.css}" rel="stylesheet"/>
+    <link th:href="@{layui/css/layui.css}" rel="stylesheet">
+</head>
+<body style="height: 900px;">
+<!--登录 -->
+<div class="login-box layui-form">
+    <h2>登录博客管理系统</h2>
+    <div class="user-box">
+        <input type="text" lay-verType="tips" required lay-verify="newName|required" name="username" class="username" autocomplete="off"/>
+        <label class="zh">账号</label>
+    </div>
+    <div class="user-box">
+        <input type="password" name="userpassword" lay-verType="tips" required lay-verify="password|required" class="userpassword"/>
+        <label class="pwd">密码</label>
+    </div>
+    <div class="yzm-box">
+        <input type="text" lay-verType="tips" required lay-verify="yanzhenma|required" class="yanzhenma"/>
+        <div class="yzm">
+            <img th:src="@{/kaptcha}" title="刷新验证码" onclick="refresh_kaptcha()" id="kaptcha" style="width:100px;height:40px;" class="mr-2"/>
+            <a href="javascript:refresh_kaptcha();" class="font-size-12 align-bottom">刷新验证码</a>
+        </div>
+    </div>
+    <button class="sbt" lay-submit lay-filter="log_submit">登录</button>
+</div>
+<script th:src="@{js/jquery.min.js}"></script>
+<script th:src="@{layui/layui.js}"></script>
+<script>
+    function refresh_kaptcha() {
+        $("#kaptcha").attr("src", "/kaptcha?" + Math.random());
+    }
+
+    layui.use(['element', 'layer', 'form'], function () {
+        var element = layui.element;
+        var layer = layui.layer;
+        var form = layui.form;
+        form.verify({
+            newName: [/\S/,'用户名不能为空' ] ,
+            password: [/\S/,'密码不能为空' ],
+            yanzhenma: [/\S/,'验证码不能为空' ]
+        })
+        form.on('submit(log_submit)', function(data){
+            var username = $(".username").val();
+            var password = $(".userpassword").val();
+            var yanzhengma = $(".yanzhenma").val();
+            $.ajax({
+                url: "login",
+                data: {
+                    "username": username,
+                    "password": password,
+                    "yanzhengma": yanzhengma
+                },
+                success: function (data) {
+                    console.log(data);
+                    var error = data.error;
+                    if (error == "成功") {
+                        window.location.href = "back";
+                    } else if (data.msg == "验证码错误") {
+                        layer.alert("验证码错误",function(){
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.alert("登录失败,账号或密码错误",function(){
+                            window.location.reload();
+                        });
+                    }
+                },
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>
+<script>
+    $(".username").mouseenter(function () {
+        $(".zh").animate({
+            top: '-20px',
+            left: '0px',
+            fontSize: '12px'
+        });
+    })
+    $(".username").mouseleave(function () {
+        if ($(".username").val() == "") {
+            $(".zh").animate({
+                top: '0px',
+                left: '0px',
+                fontSize: '16px'
+            });
+        }
+    })
+    $(".userpassword").mouseenter(function () {
+        $(".pwd").animate({
+            top: '-20px',
+            left: '0px',
+            fontSize: '12px'
+
+        });
+    })
+    $(".userpassword").mouseleave(function () {
+        if ($(".userpassword").val() == "") {
+            $(".pwd").animate({
+                top: '0px',
+                left: '0px',
+                fontSize: '16px'
+            });
+        }
+    })
+    $(".sbt").mouseenter(function () {
+        $(".sbt").css("background", "#03e9f4").css("box-shadow", "0px 0px 35px #03e9f4");
+    })
+    $(".sbt").mouseleave(function () {
+        $(".sbt").css("background", "black").css("box-shadow", "0px 0px 0px black");
+    })
+    $(".register").mouseenter(function () {
+        $(".register").css("background", "#03e9f4").css("box-shadow", "0px 0px 35px #03e9f4");
+    })
+    $(".register").mouseleave(function () {
+        $(".register").css("background", "black").css("box-shadow", "0px 0px 0px black");
+    })
+    $(".rst").mouseenter(function () {
+        $(".rst").css("background", "#03e9f4").css("box-shadow", "0px 0px 35px #03e9f4");
+    })
+    $(".rst").mouseleave(function () {
+        $(".rst").css("background", "black").css("box-shadow", "0px 0px 0px black");
+    })
+</script>
+</body>
+</html>

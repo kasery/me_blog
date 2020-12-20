@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}">
+    <style>
+        .layui-form-label {
+            /*width: 100%;*/
+            padding: 10px 0;
+            text-align: left;
+        }
+
+        .layui-input-block {
+            margin-left: 80px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div>
+        <div style="padding: 20px;">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">标签名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="tag_name" id="tag_name" placeholder="请输入标签名" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+
+                <div style="margin-left: 1140px;float: right;">
+                    <button type="button" class="layui-btn" lay-submit lay-filter="sub">添加标签</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{js/jquery.min.js}"></script>
+<script th:src="@{layui/layui.js}"></script>
+<script th:src="@{js/util.js}"></script>
+
+<script type="text/javascript">
+    $(function () {
+        layui.use(['form', 'element', 'layer'], function () {
+            var element = layui.element;
+            var from = layui.form;
+            var layer = layui.layer;
+
+            var data = getQueryString();
+            console.log(data);
+
+            from.on('submit(sub)', function (data) {
+                console.log(data.field)
+                $.ajax({
+                    url: "blog/addtag",
+                    data: {
+                        "tag_name": $("#tag_name").val()
+                    },
+                    success: function (req) {
+                        if (req > 0) {
+                            layer.alert("添加成功！", function (index) {
+                                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                parent.layer.close(index);
+                                parent.layui.table.reload('testReload');
+                            });
+                        } else {
+                            layer.alert("添加失败！");
+                        }
+                    }
+                });
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+        });
+    });
+</script>
+</body>
+</html>
