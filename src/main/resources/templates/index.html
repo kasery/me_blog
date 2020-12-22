@@ -599,12 +599,8 @@
         });
     });
 </script>
+<!-- 页面效果 -->
 <script>
-    //移出博客文章封面时回到原来大小
-    $("#blog_context").off("mouseleave").on("mouseleave",".blog_cover_img",function(event){
-        event.stopPropagation();//阻止冒泡事件    阻止点击事件向上传播
-        $(this).animate({"width": "300px","height":"250px"}, "slow");
-    });
     //滚动滚动条使进度条加载
     $(window).bind('scroll', function () {
         var soun = document.documentElement.scrollTop + document.body.scrollTop;
@@ -694,6 +690,7 @@
         }
     })
 </script>
+<!-- 古诗 -->
 <script type="text/javascript">
     jinrishici.load(function(result) {
         var sentence = document.querySelector("#poem_sentence")
