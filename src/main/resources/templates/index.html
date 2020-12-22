@@ -8,8 +8,8 @@
     <meta name="keywords" content="">
     <meta name="description" content="个人博客">
     <link th:href="@{css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{css/ll-css.css}" rel="stylesheet">
     <link th:href="@{css/font-awesome.min.css}" rel="stylesheet">
+    <link th:href="@{css/ll-css.css}" rel="stylesheet">
     <link th:href="@{css/style.css}" rel="stylesheet">
     <link th:href="@{css/style4.css}" rel="stylesheet">
     <link th:href="@{css/iconfont.css}" rel="stylesheet">
@@ -216,10 +216,9 @@
     <div class="progressbar-b"></div>
 </div>
 <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
-<script th:src="@{js/ribbon.js}"></script>
+<script th:src="@{js/TweenMax.min.js}"></script>
 <script th:src="@{js/jquery.min.js}"></script>
 <script th:src="@{js/bootstrap.min.js}"></script>
-<script th:src="@{js/TweenMax.min.js}"></script>
 <script th:src="@{js/index.js}"></script>
 <script th:src="@{js/jquery.js}"></script>
 <script th:src="@{layui/layui.js}"></script>
@@ -699,5 +698,6 @@
         info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '《' + result.data.origin.title + '》'
     });
 </script>
+<script th:src="@{js/ribbon.js}"></script>
 </body>
 </html>
