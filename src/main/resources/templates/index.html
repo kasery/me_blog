@@ -223,6 +223,12 @@
 <script th:src="@{js/jquery.js}"></script>
 <script th:src="@{layui/layui.js}"></script>
 <script>
+    //图片懒加载
+    layui.use('flow', function(){
+        var flow = layui.flow;
+        //当你执行这样一个方法时，即对页面中的全部带有lay-src的img元素开启了懒加载（当然你也可以指定相关img）
+        flow.lazyimg();
+    });
     //记录博客访问量
     $.ajax({
         url:"blog/view",
@@ -281,7 +287,7 @@
                                             "<div class='bk_context_box'> " +
                                             "<div class='bk_context_box_left'> " +
                                             "<a class='article_img' href='/BlogContent?blog_id=1'> " +
-                                            "<img src='img/01_fuko.jpg' class='me_img' > " +
+                                            "<img lay-src='img/01_fuko.jpg' class='me_img' > " +
                                             "</a>" +
                                             "<span style='font-size: 24px;' class='yourName'><a href='/BlogContent?blog_id=1'>"+yourname+"</a></span> " +
                                             "<span class='blog_in'>in</span> <span class='blog_title_category'>" + req.data.list[i].blog_category_name + "</span> " +
@@ -294,7 +300,7 @@
                                             "<!-- 用来存放文章标题和图片 -->" +
                                             "<div class='blog_context' style='padding-bottom: 30px;border-bottom: 1px solid #eee;margin-bottom: 5%;'>" +
                                             "<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" +
-                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' src=" + req.data.list[i].blog_cover_image + ">" +
+                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' lay-src=" + req.data.list[i].blog_cover_image + ">" +
                                             "</a>" +
                                             "</div>"
                                         );
@@ -321,7 +327,7 @@
                                             "<div class='bk_context_box'> " +
                                             "<div class='bk_context_box_left'> " +
                                             "<a class='article_img' href='/BlogContent?blog_id=1'> " +
-                                            "<img src='img/01_fuko.jpg' class='me_img' > " +
+                                            "<img lay-src='img/01_fuko.jpg' class='me_img' > " +
                                             "</a>" +
                                             "<span style='font-size: 24px;'><a href='/BlogContent?blog_id=1'>"+yourname+"</a></span> " +
                                             "<span class='blog_in'>in</span> <span class='blog_title_category'>" + req.data.list[i].blog_category_name + "</span> " +
@@ -334,7 +340,7 @@
                                             "<!-- 用来存放文章标题和图片 -->" +
                                             "<div class='blog_context' style='padding-bottom: 30px;border-bottom: 1px solid #eee;margin-bottom: 5%;'>" +
                                             "<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" +
-                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' src=" + req.data.list[i].blog_cover_image + ">" +
+                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' lay-src=" + req.data.list[i].blog_cover_image + ">" +
                                             "</a>" +
                                             "</div>"
                                         );
@@ -423,7 +429,7 @@
                                             "<div class='bk_context_box'> " +
                                             "<div class='bk_context_box_left'> " +
                                             "<a class='article_img' href='/BlogContent?blog_id=1'> " +
-                                            "<img src='img/01_fuko.jpg' class='me_img' > " +
+                                            "<img lay-src='img/01_fuko.jpg' class='me_img' > " +
                                             "</a> " +
                                             "<span style='font-size: 24px;'><a href='/BlogContent?blog_id=1'>"+yourname+"</a></span> " +
                                             "<span class='blog_in'>in</span> <span class='blog_title_category'>" + req.data.list[i].blog_category_name + "</span> " +
@@ -436,7 +442,7 @@
                                             "<!-- 用来存放文章标题和图片 -->" +
                                             "<div class='blog_context' style='padding-bottom: 30px;border-bottom: 1px solid #eee;margin-bottom: 5%;'>" +
                                             "<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" +
-                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' src=" + req.data.list[i].blog_cover_image + ">" +
+                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' lay-src=" + req.data.list[i].blog_cover_image + ">" +
                                             "</a>" +
                                             "</div>"
                                         );
@@ -502,7 +508,7 @@
                                             "<div class='bk_context_box'> " +
                                             "<div class='bk_context_box_left'> " +
                                             "<a class='article_img' href='/BlogContent?blog_id=1'> " +
-                                            "<img src='img/01_fuko.jpg' class='me_img' > " +
+                                            "<img lay-src='img/01_fuko.jpg' class='me_img' > " +
                                             "</a> " +
                                             "<span style='font-size: 24px;'><a href='/BlogContent?blog_id=1'>"+yourname+"</a></span> " +
                                             "<span class='blog_in'>in</span> <span class='blog_title_category'>" + req.data.list[i].blog_category_name + "</span> " +
@@ -515,7 +521,7 @@
                                             "<!-- 用来存放文章标题和图片 -->" +
                                             "<div class='blog_context' style='padding-bottom: 30px;border-bottom: 1px solid #eee;margin-bottom: 5%;'>" +
                                             "<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" +
-                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' src=" + req.data.list[i].blog_cover_image + ">" +
+                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' lay-src=" + req.data.list[i].blog_cover_image + ">" +
                                             "</a>" +
                                             "</div>"
                                         );
@@ -571,7 +577,7 @@
                                             "<div class='bk_context_box'> " +
                                             "<div class='bk_context_box_left'> " +
                                             "<a class='article_img' href='/BlogContent?blog_id=1'> " +
-                                            "<img src='img/01_fuko.jpg' class='me_img' > " +
+                                            "<img lay-src='img/01_fuko.jpg' class='me_img' > " +
                                             "</a> " +
                                             "<span style='font-size: 24px;'><a href='/BlogContent?blog_id=1'>"+yourname+"</a></span> " +
                                             "<span class='blog_in'>in</span> <span class='blog_title_category'>" + req.data.list[i].blog_category_name + "</span> " +
@@ -584,7 +590,7 @@
                                             "<!-- 用来存放文章标题和图片 -->" +
                                             "<div class='blog_context' style='padding-bottom: 30px;border-bottom: 1px solid #eee;margin-bottom: 5%;'>" +
                                             "<a style='display: block;' href='/BlogContent?blog_id=" + req.data.list[i].blog_id + "'>" +
-                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' src=" + req.data.list[i].blog_cover_image + ">" +
+                                            "<h2>" + req.data.list[i].blog_title + "</h2><img class='blog_cover_img' lay-src=" + req.data.list[i].blog_cover_image + ">" +
                                             "</a>" +
                                             "</div>"
                                         );
