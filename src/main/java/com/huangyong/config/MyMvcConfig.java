@@ -11,6 +11,7 @@ public class MyMvcConfig implements WebMvcConfigurer {
         //注册TestInterceptor拦截器
         InterceptorRegistration registration = registry.addInterceptor(new AdminInterceptor());
         registration.addPathPatterns("/**"); //所有路径都被拦截
+        registration.excludePathPatterns("/");
         registration.excludePathPatterns("/css/**");
         registration.excludePathPatterns("/css2/**");
         registration.excludePathPatterns("/css3/**");
@@ -35,6 +36,7 @@ public class MyMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("index");
         registry.addViewController("/log").setViewName("login");
         registry.addViewController("/index").setViewName("index");
         registry.addViewController("/BlogContent").setViewName("BlogContent");

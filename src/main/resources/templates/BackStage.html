@@ -58,7 +58,7 @@
             <ul class="system_manager_console">
                 <li class="nav_bottom_li"><a href="/set" class="fa fa-wrench">&nbsp;&nbsp;&nbsp;系统配置</a></li>
                 <li class="nav_bottom_li"><a href="/pass" class="fa fa-user-secret">&nbsp;&nbsp;&nbsp;修改密码</a></li>
-                <li class="nav_bottom_li"><a href="/log" class="fa fa-sign-out">&nbsp;&nbsp;&nbsp;安全退出</a></li>
+                <li class="nav_bottom_li"><a onclick="safequit()" class="fa fa-sign-out">&nbsp;&nbsp;&nbsp;安全退出</a></li>
             </ul>
         </div>
     </div>
@@ -274,12 +274,23 @@
         success: function (req) {
             console.log("查询出分类：");
             console.log(req)
+            var arr = [];
+            for(var i =0;i<req.length;i++){
+                arr.push(req[i].name);
+            }
+            console.log(arr)
             var myChart3 = echarts.init(document.getElementById('main3'));
             var option3 = {
                 title: {
                     text: '博客分类的博客数'
                 },
-                tooltip: {},
+
+                tooltip: {
+                    top:10
+                },
+                legend: {
+                    data:arr
+                },
                 series: [{
                     name: '博客分类的博客数',
                     type: 'pie',
@@ -290,6 +301,15 @@
             myChart3.setOption(option3);
         }
     })
+    function safequit(){
+        $.ajax({
+            url: "blog/safequit",
+            success: function (req) {
+                console.log(req);
+                window.location = "/log"
+            }
+        })
+    }
 </script>
 <!-- 获取总数 -->
 <script>

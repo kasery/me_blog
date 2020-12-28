@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -19,6 +18,14 @@ import java.util.*;
 public class BackStageController {
     @Autowired
     BackStageService backStageService;
+
+    //安全退出
+    @RequestMapping("/safequit")
+    public int safequit(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.removeAttribute("user");
+        return 1;
+    }
 
     //记录博客访问量
     @RequestMapping("/view")
@@ -114,7 +121,7 @@ public class BackStageController {
 
     //友链查询全部
     @RequestMapping("/linkFindAll")
-    public Result<PageInfo<link>> linkFindAll(@RequestParam(defaultValue = "1", name = "page") int page, @RequestParam(defaultValue = "10", name = "limit") int pageSize) {
+    public Result<PageInfo<link>> linkFindAll(@RequestParam(defaultValue = "1", name = "page") int page, @RequestParam(defaultValue = "30", name = "limit") int pageSize) {
         List<link> links = backStageService.linkFindAll(page, pageSize, "tb_link");
         PageInfo<link> pageInfo = new PageInfo<link>(links);
 
